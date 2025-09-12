@@ -2,8 +2,18 @@ import { NextResponse } from "next/server"
 import { db } from "@/lib/firebase"
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore"
 
+// Check if Firebase is properly initialized
+if (!db) {
+  console.error("Firebase is not initialized. Please check your environment variables.")
+}
+
 export async function GET() {
   try {
+    // Check if Firebase is initialized
+    if (!db) {
+      return NextResponse.json({ error: "Firebase not configured" }, { status: 503 })
+    }
+
     const postsQuery = query(
       collection(db, "blog_posts"),
       where("status", "==", "published"),

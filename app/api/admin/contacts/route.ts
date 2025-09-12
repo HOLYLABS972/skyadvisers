@@ -6,6 +6,11 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 import { collection, getDocs, query, orderBy } from "firebase/firestore"
 
+// Check if Firebase is properly initialized
+if (!db) {
+  console.error("Firebase is not initialized. Please check your environment variables.")
+}
+
 function getAdminUserFromHeaders(request: NextRequest) {
   const userHeader = request.headers.get("x-admin-user")
   return userHeader ? JSON.parse(userHeader) : null
@@ -13,6 +18,11 @@ function getAdminUserFromHeaders(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    // Check if Firebase is initialized
+    if (!db) {
+      return NextResponse.json({ error: "Firebase not configured" }, { status: 503 })
+    }
+
     // Temporarily allow access without authentication for testing
     // const adminUser = getAdminUserFromHeaders(request)
     // if (!adminUser) {

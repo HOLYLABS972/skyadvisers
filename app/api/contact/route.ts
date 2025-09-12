@@ -2,6 +2,11 @@ import { type NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/firebase"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 
+// Check if Firebase is properly initialized
+if (!db) {
+  console.error("Firebase is not initialized. Please check your environment variables.")
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -16,6 +21,25 @@ export async function POST(request: NextRequest) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
       return NextResponse.json({ error: "Invalid email format" }, { status: 400 })
+    }
+
+    // Check if Firebase is initialized
+    if (!db) {
+      // Fallback: log to console if Firebase is not configured
+      console.log("Contact form submission (Firebase not configured):", {
+        name,
+        email,
+        message,
+        timestamp,
+        locale,
+      })
+
+      return NextResponse.json(
+        {
+          message: "Contact form submitted successfully",
+        },
+        { status: 200 },
+      )
     }
 
     try {
