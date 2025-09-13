@@ -1,6 +1,7 @@
 import { initializeApp, getApps } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
 import { getAuth } from "firebase/auth"
+import { getStorage } from "firebase/storage"
 
 // Check if all required environment variables are present
 const hasValidConfig = () => {
@@ -17,6 +18,7 @@ const hasValidConfig = () => {
 let app: any = null
 let db: any = null
 let auth: any = null
+let storage: any = null
 
 // Initialize Firebase only if configuration is valid
 if (hasValidConfig()) {
@@ -38,9 +40,12 @@ if (hasValidConfig()) {
 
   // Initialize Firebase Auth
   auth = getAuth(app)
+
+  // Initialize Firebase Storage
+  storage = getStorage(app)
 } else {
   console.warn("Firebase configuration is incomplete. Please check your environment variables.")
 }
 
-export { db, auth }
+export { db, auth, storage }
 export default app

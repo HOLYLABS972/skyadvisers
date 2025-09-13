@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,9 +9,10 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
-import { Save, Eye } from "lucide-react"
+import { Save, Eye, Upload, X, Image as ImageIcon } from "lucide-react"
 import { auth, db } from "@/lib/firebase"
 import { collection, addDoc, doc, updateDoc, serverTimestamp, getDoc } from "firebase/firestore"
+import { uploadImage, validateImageFile, type UploadResult } from "@/lib/image-upload"
 
 interface BlogPostData {
   title: string
@@ -20,6 +21,8 @@ interface BlogPostData {
   content: string
   status: "draft" | "published"
   locale: "en" | "he"
+  featuredImage?: string
+  images?: UploadResult[]
 }
 
 interface BlogPostFormProps {
@@ -35,8 +38,12 @@ export function BlogPostForm({ initialData, postId }: BlogPostFormProps) {
     content: initialData?.content || "",
     status: initialData?.status || "draft",
     locale: initialData?.locale || "en",
+    featuredImage: initialData?.featuredImage || "",
+    images: initialData?.images || [],
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
   const { toast } = useToast()
 
@@ -57,6 +64,64 @@ export function BlogPostForm({ initialData, postId }: BlogPostFormProps) {
     }))
   }
 
+  const handleImageUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return
+
+    setIsUploading(true)
+    const uploadPromises: Promise<UploadResult>[] = []
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      const validation = validateImageFile(file)
+      
+      if (!validation.isValid) {
+        toast({
+          title: "Invalid Image",
+          description: validation.error,
+          variant: "destructive",
+        })
+        continue
+      }
+
+      uploadPromises.push(uploadImage(file, "blog-images"))
+    }
+
+    try {
+      const results = await Promise.all(uploadPromises)
+      setFormData((prev) => ({
+        ...prev,
+        images: [...(prev.images || []), ...results],
+      }))
+      
+      toast({
+        title: "Success",
+        description: `${results.length} image(s) uploaded successfully`,
+      })
+    } catch (error) {
+      toast({
+        title: "Upload Error",
+        description: "Failed to upload images. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const removeImage = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images?.filter((_, i) => i !== index) || [],
+    }))
+  }
+
+  const setFeaturedImage = (imageUrl: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      featuredImage: imageUrl,
+    }))
+  }
+
   const handleSubmit = async (status: "draft" | "published") => {
     setIsSubmitting(true)
 
@@ -73,6 +138,8 @@ export function BlogPostForm({ initialData, postId }: BlogPostFormProps) {
           content: formData.content.trim(),
           status,
           locale: formData.locale,
+          featuredImage: formData.featuredImage || "",
+          images: formData.images || [],
           updatedAt: serverTimestamp(),
         })
       } else {
@@ -83,6 +150,8 @@ export function BlogPostForm({ initialData, postId }: BlogPostFormProps) {
           content: formData.content.trim(),
           status,
           locale: formData.locale,
+          featuredImage: formData.featuredImage || "",
+          images: formData.images || [],
           author,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
@@ -159,6 +228,74 @@ export function BlogPostForm({ initialData, postId }: BlogPostFormProps) {
               className="font-mono text-sm"
               required
             />
+          </div>
+
+          {/* Image Upload Section */}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Images</Label>
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => handleImageUpload(e.target.files)}
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploading}
+                  className="mb-4"
+                >
+                  <Upload className="mr-2 h-4 w-4" />
+                  {isUploading ? "Uploading..." : "Upload Images"}
+                </Button>
+                <p className="text-sm text-gray-500">
+                  Upload multiple images (JPEG, PNG, WebP, GIF) - Max 5MB each
+                </p>
+              </div>
+            </div>
+
+            {/* Featured Image Selection */}
+            {formData.images && formData.images.length > 0 && (
+              <div className="space-y-2">
+                <Label>Featured Image</Label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {formData.images.map((image, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={image.url}
+                        alt={`Uploaded image ${index + 1}`}
+                        className="w-full h-24 object-cover rounded-lg border-2 border-gray-200 cursor-pointer hover:border-blue-500 transition-colors"
+                        onClick={() => setFeaturedImage(image.url)}
+                      />
+                      {formData.featuredImage === image.url && (
+                        <div className="absolute top-1 right-1 bg-blue-500 text-white rounded-full p-1">
+                          <ImageIcon className="h-3 w-3" />
+                        </div>
+                      )}
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => removeImage(index)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                {formData.featuredImage && (
+                  <p className="text-sm text-green-600">
+                    ✓ Featured image selected
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">

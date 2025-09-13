@@ -21,6 +21,11 @@ interface BlogPost {
   updatedAt: string
   author: string
   locale: "en" | "he"
+  featuredImage?: string
+  images?: Array<{
+    url: string
+    path: string
+  }>
 }
 
 export default function BlogPostPage() {
@@ -154,6 +159,17 @@ export default function BlogPostPage() {
 
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 text-balance">{post.title}</h1>
 
+            {/* Featured Image */}
+            {post.featuredImage && (
+              <div className="mb-8">
+                <img
+                  src={post.featuredImage}
+                  alt={post.title}
+                  className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
+                />
+              </div>
+            )}
+
             <p className="text-xl text-muted-foreground mb-8 text-pretty">{post.excerpt}</p>
 
             <div className="flex items-center justify-between border-b border-border pb-6">
@@ -173,6 +189,24 @@ export default function BlogPostPage() {
           <div className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-a:text-secondary hover:prose-a:text-secondary/80">
             <div className="whitespace-pre-wrap leading-relaxed">{post.content}</div>
           </div>
+
+          {/* Image Gallery */}
+          {post.images && post.images.length > 0 && (
+            <div className="mt-12">
+              <h3 className="text-2xl font-bold mb-6">Gallery</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {post.images.map((image, index) => (
+                  <div key={index} className="group cursor-pointer">
+                    <img
+                      src={image.url}
+                      alt={`Gallery image ${index + 1}`}
+                      className="w-full h-48 object-cover rounded-lg shadow-md group-hover:shadow-lg transition-shadow duration-300"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Article Footer */}
           <footer className="mt-16 pt-8 border-t border-border">
