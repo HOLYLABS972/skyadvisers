@@ -16,10 +16,10 @@ export function useLocale() {
     router.push(newPathname)
   }
 
-  const t = (key: string) => getTranslation(locale, key)
+  const t = (key: string) => getTranslation(key, locale)
 
   // Helper function to get default translation for fallbacks
-  const getDefaultTranslation = (key: string) => getTranslation(defaultLocale, key)
+  const getDefaultTranslation = (key: string) => getTranslation(key, defaultLocale)
 
   return { locale, changeLocale, t, getDefaultTranslation }
 }

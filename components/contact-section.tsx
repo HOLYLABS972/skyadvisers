@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { getTranslation } from "@/lib/i18n"
+import { getTranslation, type Locale } from "@/lib/i18n"
 import { useContactInfo } from "@/hooks/use-contact-info"
 import { Mail, Phone, MapPin, Send } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
@@ -24,25 +24,7 @@ interface ContactSectionProps {
 }
 
 export function ContactSection({ locale }: ContactSectionProps) {
-  // Hardcoded translations for testing
-  const translations = {
-    en: {
-      "contact.title": "Get In Touch",
-      "contact.name": "Name",
-      "contact.email": "Email",
-      "contact.message": "Message",
-      "contact.submit": "Send Message",
-    },
-    he: {
-      "contact.title": "צור קשר",
-      "contact.name": "שם",
-      "contact.email": "אימייל",
-      "contact.message": "הודעה",
-      "contact.submit": "שלח הודעה",
-    }
-  }
-  
-  const t = (key: string) => translations[locale as keyof typeof translations]?.[key as keyof typeof translations.en] || key
+  const t = (key: string) => getTranslation(key, locale as Locale)
   const { contactInfo } = useContactInfo()
   const { toast } = useToast()
   const [formData, setFormData] = useState<ContactFormData>({
@@ -77,8 +59,8 @@ export function ContactSection({ locale }: ContactSectionProps) {
 
       if (response.ok) {
         toast({
-          title: "Message sent successfully!",
-          description: "We'll get back to you within 24 hours.",
+          title: t("contact.toasts.success.title"),
+          description: t("contact.toasts.success.desc"),
         })
         setFormData({ name: "", email: "", message: "" })
       } else {
@@ -86,8 +68,8 @@ export function ContactSection({ locale }: ContactSectionProps) {
       }
     } catch (error) {
       toast({
-        title: "Error sending message",
-        description: "Please try again or contact us directly.",
+        title: t("contact.toasts.error.title"),
+        description: t("contact.toasts.error.desc"),
         variant: "destructive",
       })
     } finally {
@@ -102,7 +84,7 @@ export function ContactSection({ locale }: ContactSectionProps) {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance">{t("contact.title")}</h2>
             <p className="text-lg text-muted-foreground">
-              Ready to take your business to the next level? Let's discuss your goals.
+              {t("contact.subtitle")}
             </p>
           </div>
 
@@ -110,7 +92,7 @@ export function ContactSection({ locale }: ContactSectionProps) {
             {/* Contact Form */}
             <Card className="border-border">
               <CardHeader>
-                <CardTitle className="text-xl font-semibold text-foreground">Send us a message</CardTitle>
+                <CardTitle className="text-xl font-semibold text-foreground">{t("contact.sendMessage")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -126,7 +108,7 @@ export function ContactSection({ locale }: ContactSectionProps) {
                       onChange={handleInputChange}
                       required
                       className="bg-background border-border focus:border-secondary"
-                      placeholder="Your full name"
+                      placeholder={t("contact.placeholders.name")}
                     />
                   </div>
 
@@ -142,7 +124,7 @@ export function ContactSection({ locale }: ContactSectionProps) {
                       onChange={handleInputChange}
                       required
                       className="bg-background border-border focus:border-secondary"
-                      placeholder="your.email@company.com"
+                      placeholder={t("contact.placeholders.email")}
                     />
                   </div>
 
@@ -158,7 +140,7 @@ export function ContactSection({ locale }: ContactSectionProps) {
                       required
                       rows={5}
                       className="bg-background border-border focus:border-secondary resize-none"
-                      placeholder="Tell us about your business goals and how we can help..."
+                      placeholder={t("contact.placeholders.message")}
                     />
                   </div>
 
@@ -168,7 +150,7 @@ export function ContactSection({ locale }: ContactSectionProps) {
                     className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground"
                   >
                     {isSubmitting ? (
-                      "Sending..."
+                      t("contact.sending")
                     ) : (
                       <>
                         {t("contact.submit")}
@@ -189,7 +171,7 @@ export function ContactSection({ locale }: ContactSectionProps) {
                       <Mail className="h-6 w-6 text-secondary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground mb-1">Email</h3>
+                      <h3 className="font-semibold text-foreground mb-1">{t("contact.emailLabel")}</h3>
                       <a 
                         href={`mailto:${contactInfo.email}`}
                         className="text-muted-foreground hover:text-secondary transition-colors"
@@ -208,7 +190,7 @@ export function ContactSection({ locale }: ContactSectionProps) {
                       <Phone className="h-6 w-6 text-secondary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground mb-1">Phone</h3>
+                      <h3 className="font-semibold text-foreground mb-1">{t("contact.phoneLabel")}</h3>
                       <a 
                         href={`tel:${contactInfo.phone}`}
                         className="text-muted-foreground hover:text-secondary transition-colors"
@@ -227,7 +209,7 @@ export function ContactSection({ locale }: ContactSectionProps) {
                       <MapPin className="h-6 w-6 text-secondary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground mb-1">Address</h3>
+                      <h3 className="font-semibold text-foreground mb-1">{t("contact.addressLabel")}</h3>
                       <p className="text-muted-foreground">{contactInfo.address}</p>
                     </div>
                   </div>
@@ -237,19 +219,19 @@ export function ContactSection({ locale }: ContactSectionProps) {
               {/* Business Hours */}
               <Card className="border-border">
                 <CardContent className="pt-6">
-                  <h3 className="font-semibold text-foreground mb-4">Business Hours</h3>
+                  <h3 className="font-semibold text-foreground mb-4">{t("contact.businessHours")}</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Monday - Friday</span>
+                      <span className="text-muted-foreground">{t("contact.mondayFriday")}</span>
                       <span className="text-foreground">9:00 AM - 6:00 PM</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Saturday</span>
+                      <span className="text-muted-foreground">{t("contact.saturday")}</span>
                       <span className="text-foreground">10:00 AM - 4:00 PM</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Sunday</span>
-                      <span className="text-foreground">Closed</span>
+                      <span className="text-muted-foreground">{t("contact.sunday")}</span>
+                      <span className="text-foreground">{t("contact.closed")}</span>
                     </div>
                   </div>
                 </CardContent>

@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { getTranslation } from "@/lib/i18n"
+import { getTranslation, type Locale } from "@/lib/i18n"
 import { ArrowRight, TrendingUp } from "lucide-react"
 
 interface HeroSectionProps {
@@ -9,21 +9,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ locale }: HeroSectionProps) {
-  // Hardcoded translations for testing
-  const translations = {
-    en: {
-      "hero.title": "Strategic Advisory for Visionary Leaders",
-      "hero.subtitle": "Empowering CEOs and founders with expert guidance on investment, startup evaluation, and business strategy.",
-      "hero.cta": "Get Started",
-    },
-    he: {
-      "hero.title": "ייעוץ אסטרטגי למנהיגים בעלי חזון",
-      "hero.subtitle": "מעצימים מנכ״לים ומייסדים עם הדרכה מומחית בהשקעות, הערכת סטארט-אפים ואסטרטגיה עסקית.",
-      "hero.cta": "התחל עכשיו",
-    }
-  }
-  
-  const t = (key: string) => translations[locale as keyof typeof translations]?.[key as keyof typeof translations.en] || key
+  const t = (key: string) => getTranslation(key, locale as Locale)
 
   return (
     <section className="relative bg-gradient-to-br from-background to-muted py-20 lg:py-32">
@@ -32,7 +18,7 @@ export function HeroSection({ locale }: HeroSectionProps) {
           {/* Hero Badge */}
           <div className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium mb-8">
             <TrendingUp className="h-4 w-4" />
-            Strategic Business Advisory
+            {t("hero.badge")}
           </div>
 
           {/* Hero Title */}
@@ -60,19 +46,19 @@ export function HeroSection({ locale }: HeroSectionProps) {
           <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-60">
             <div className="text-center">
               <div className="text-2xl font-bold text-foreground">500+</div>
-              <div className="text-sm text-muted-foreground">Startups Advised</div>
+              <div className="text-sm text-muted-foreground">{t("hero.stats.startups")}</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-foreground">$2B+</div>
-              <div className="text-sm text-muted-foreground">Funding Raised</div>
+              <div className="text-sm text-muted-foreground">{t("hero.stats.funding")}</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-foreground">15+</div>
-              <div className="text-sm text-muted-foreground">Years Experience</div>
+              <div className="text-sm text-muted-foreground">{t("hero.stats.years")}</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-foreground">98%</div>
-              <div className="text-sm text-muted-foreground">Success Rate</div>
+              <div className="text-sm text-muted-foreground">{t("hero.stats.success")}</div>
             </div>
           </div>
         </div>

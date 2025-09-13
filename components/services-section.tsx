@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { getTranslation } from "@/lib/i18n"
+import { getTranslation, type Locale } from "@/lib/i18n"
 import { TrendingUp, Target, Lightbulb } from "lucide-react"
 
 interface ServicesSectionProps {
@@ -9,29 +9,7 @@ interface ServicesSectionProps {
 }
 
 export function ServicesSection({ locale }: ServicesSectionProps) {
-  // Hardcoded translations for testing
-  const translations = {
-    en: {
-      "services.title": "Our Services",
-      "services.investment.title": "Investment Advisory",
-      "services.investment.description": "Expert guidance on funding strategies and investor relations.",
-      "services.evaluation.title": "Startup Evaluation",
-      "services.evaluation.description": "Comprehensive assessment of startup potential and market viability.",
-      "services.strategy.title": "Business Strategy",
-      "services.strategy.description": "Strategic planning and execution for sustainable growth.",
-    },
-    he: {
-      "services.title": "השירותים שלנו",
-      "services.investment.title": "ייעוץ השקעות",
-      "services.investment.description": "הדרכה מומחית באסטרטגיות מימון ויחסי משקיעים.",
-      "services.evaluation.title": "הערכת סטארט-אפים",
-      "services.evaluation.description": "הערכה מקיפה של פוטנציאל סטארט-אפים וכדאיות שוק.",
-      "services.strategy.title": "אסטרטגיה עסקית",
-      "services.strategy.description": "תכנון אסטרטגי וביצוע לצמיחה בת קיימא.",
-    }
-  }
-  
-  const t = (key: string) => translations[locale as keyof typeof translations]?.[key as keyof typeof translations.en] || key
+  const t = (key: string) => getTranslation(key, locale as Locale)
 
   const services = [
     {

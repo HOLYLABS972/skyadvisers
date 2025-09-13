@@ -1,15 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { db } from "@/lib/firebase"
-import { doc, getDoc, setDoc } from "firebase/firestore"
+import { getAdminDb } from "@/lib/firebase-admin"
 
-// Force Node.js runtime for Firebase client compatibility
+// Force Node.js runtime for Firebase admin compatibility
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-
-// Check if Firebase is properly initialized
-if (!db) {
-  console.error("Firebase is not initialized. Please check your environment variables.")
-}
 
 function getAdminUserFromHeaders(request: NextRequest) {
   const userHeader = request.headers.get("x-admin-user")
@@ -18,7 +12,8 @@ function getAdminUserFromHeaders(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    // Check if Firebase is initialized
+    // Get Firebase Admin DB
+    const db = getAdminDb()
     if (!db) {
       return NextResponse.json({ error: "Firebase not configured" }, { status: 503 })
     }
@@ -29,11 +24,11 @@ export async function GET(request: NextRequest) {
     //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     // }
 
-    // Get contact info from Firestore using Firebase client
-    const docRef = doc(db, "site_settings", "contact_info")
-    const docSnap = await getDoc(docRef)
+    // Get contact info from Firestore using Firebase Admin
+    const docRef = db.collection("site_settings").doc("contact_info")
+    const docSnap = await docRef.get()
 
-    if (docSnap.exists()) {
+    if (docSnap.exists) {
       const data = docSnap.data()
       return NextResponse.json({
         contactInfo: {
@@ -74,7 +69,8 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    // Check if Firebase is initialized
+    // Get Firebase Admin DB
+    const db = getAdminDb()
     if (!db) {
       return NextResponse.json({ error: "Firebase not configured" }, { status: 503 })
     }
@@ -93,9 +89,9 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Email, phone, and address are required" }, { status: 400 })
     }
 
-    // Update settings in Firestore using Firebase client
-    const docRef = doc(db, "site_settings", "contact_info")
-    await setDoc(docRef, {
+    // Update settings in Firestore using Firebase Admin
+    const docRef = db.collection("site_settings").doc("contact_info")
+    await docRef.set({
       // Contact info
       email: contactInfo.email,
       phone: contactInfo.phone,

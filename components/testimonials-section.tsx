@@ -1,6 +1,7 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
+import { getTranslation, type Locale } from "@/lib/i18n"
 import { Star, Quote } from "lucide-react"
 
 interface TestimonialsSectionProps {
@@ -8,40 +9,25 @@ interface TestimonialsSectionProps {
 }
 
 export function TestimonialsSection({ locale }: TestimonialsSectionProps) {
-  // Hardcoded translations for testing
-  const translations = {
-    en: {
-      "nav.testimonials": "Testimonials",
-      "testimonials.subtitle": "What our clients say about working with us",
-    },
-    he: {
-      "nav.testimonials": "המלצות",
-      "testimonials.subtitle": "מה הלקוחות שלנו אומרים על העבודה איתנו",
-    }
-  }
-  
-  const t = (key: string) => translations[locale as keyof typeof translations]?.[key as keyof typeof translations.en] || key
+  const t = (key: string) => getTranslation(key, locale as Locale)
 
   const testimonials = [
     {
-      name: "Sarah Chen",
-      title: "CEO, TechFlow",
-      content:
-        "Skyadvisers helped us navigate our Series A funding round with incredible expertise. Their strategic guidance was invaluable.",
+      name: t("testimonials.items.0.name"),
+      title: t("testimonials.items.0.title"),
+      content: t("testimonials.items.0.content"),
       rating: 5,
     },
     {
-      name: "David Rodriguez",
-      title: "Founder, InnovateLab",
-      content:
-        "The team's deep understanding of the startup ecosystem and investor mindset made all the difference in our growth strategy.",
+      name: t("testimonials.items.1.name"),
+      title: t("testimonials.items.1.title"),
+      content: t("testimonials.items.1.content"),
       rating: 5,
     },
     {
-      name: "Rachel Kim",
-      title: "CEO, DataVision",
-      content:
-        "Professional, insightful, and results-driven. Skyadvisers exceeded our expectations in every aspect of their service.",
+      name: t("testimonials.items.2.name"),
+      title: t("testimonials.items.2.title"),
+      content: t("testimonials.items.2.content"),
       rating: 5,
     },
   ]

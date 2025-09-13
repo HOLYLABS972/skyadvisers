@@ -3,34 +3,18 @@
 import { useSocialLinks } from "@/hooks/use-social-links"
 import { useContactInfo } from "@/hooks/use-contact-info"
 import { useLocale } from "@/hooks/use-locale"
-import { getTranslation } from "@/lib/i18n"
+import { getTranslation, type Locale } from "@/lib/i18n"
 import { ClientOnly } from "@/components/client-only"
 import { Mail, Phone, MapPin, Linkedin, Twitter, Facebook, Youtube } from "lucide-react"
 
 interface FooterProps {
-  locale: string
+  locale?: string
 }
 
 export function Footer({ locale }: FooterProps) {
-  // Hardcoded translations for testing
-  const translations = {
-    en: {
-      "nav.services": "Services",
-      "nav.about": "About Us",
-      "nav.testimonials": "Testimonials",
-      "nav.contact": "Contact",
-      "about.description": "We are a team of experienced advisors dedicated to helping CEOs and founders navigate the complex world of business strategy and investment.",
-    },
-    he: {
-      "nav.services": "שירותים",
-      "nav.about": "אודותינו",
-      "nav.testimonials": "המלצות",
-      "nav.contact": "צור קשר",
-      "about.description": "אנחנו צוות של יועצים מנוסים המוקדשים לעזור למנכ״לים ומייסדים לנווט בעולם המורכב של אסטרטגיה עסקית והשקעות.",
-    }
-  }
-  
-  const t = (key: string) => translations[locale as keyof typeof translations]?.[key as keyof typeof translations.en] || key
+  const { locale: hookLocale } = useLocale()
+  const activeLocale = (locale as Locale) || (hookLocale as Locale)
+  const t = (key: string) => getTranslation(key, activeLocale)
 
   return (
     <footer className="bg-primary text-primary-foreground">
@@ -53,24 +37,24 @@ export function Footer({ locale }: FooterProps) {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold mb-4">Quick Links</h4>
+            <h4 className="font-semibold mb-4">{t("footer.quickLinks")}</h4>
             <ul className="space-y-2">
               <li>
                 <a
-                  href="#services"
+                  href={`/${activeLocale}#services`}
                   className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
                 >
 {t("nav.services")}
                 </a>
               </li>
               <li>
-                <a href="#about" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                <a href={`/${activeLocale}#about`} className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
 {t("nav.about")}
                 </a>
               </li>
               <li>
                 <a
-                  href="#testimonials"
+                  href={`/${activeLocale}#testimonials`}
                   className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
                 >
 {t("nav.testimonials")}
@@ -78,7 +62,7 @@ export function Footer({ locale }: FooterProps) {
               </li>
               <li>
                 <a
-                  href="#contact"
+                  href={`/${activeLocale}#contact`}
                   className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
                 >
 {t("nav.contact")}
@@ -89,29 +73,29 @@ export function Footer({ locale }: FooterProps) {
 
           {/* Contact Information */}
           <div>
-            <h4 className="font-semibold mb-4">Contact Info</h4>
+            <h4 className="font-semibold mb-4">{t("footer.contactInfo")}</h4>
             <ClientOnly 
               fallback={
                 <div className="space-y-3">
                   <div className="flex items-start space-x-3">
                     <Mail className="h-5 w-5 mt-0.5 text-primary-foreground/60" />
                     <div>
-                      <p className="text-primary-foreground/80 text-sm">Email</p>
-                      <p className="text-primary-foreground">info@skyadvisers.com</p>
+                      <p className="text-primary-foreground/80 text-sm">{t("footer.email")}</p>
+                      <p className="text-primary-foreground">{t("footer.emailValue")}</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
                     <Phone className="h-5 w-5 mt-0.5 text-primary-foreground/60" />
                     <div>
-                      <p className="text-primary-foreground/80 text-sm">Phone</p>
-                      <p className="text-primary-foreground">+1 (555) 123-4567</p>
+                      <p className="text-primary-foreground/80 text-sm">{t("footer.phone")}</p>
+                      <p className="text-primary-foreground">{t("footer.phoneValue")}</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
                     <MapPin className="h-5 w-5 mt-0.5 text-primary-foreground/60" />
                     <div>
-                      <p className="text-primary-foreground/80 text-sm">Address</p>
-                      <p className="text-primary-foreground leading-relaxed">123 Business St, City, State 12345</p>
+                      <p className="text-primary-foreground/80 text-sm">{t("footer.address")}</p>
+                      <p className="text-primary-foreground leading-relaxed">{t("footer.addressValue")}</p>
                     </div>
                   </div>
                 </div>
@@ -128,7 +112,7 @@ export function Footer({ locale }: FooterProps) {
             <ClientOnly 
               fallback={
                 <div className="text-primary-foreground/60 text-sm">
-                  © {new Date().getFullYear()} Skyadvisers. All rights reserved.
+                  © {new Date().getFullYear()} Skyadvisers. {t("footer.allRightsReserved")}
                 </div>
               }
             >
@@ -136,14 +120,14 @@ export function Footer({ locale }: FooterProps) {
             </ClientOnly>
 
             <div className="flex space-x-6 text-sm">
-              <a href="/privacy-policy" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">
-                Privacy Policy
+              <a href={`/${activeLocale}/privacy-policy`} className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">
+                {t("footer.privacyPolicy")}
               </a>
-              <a href="/terms-of-service" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">
-                Terms of Service
+              <a href={`/${activeLocale}/terms-of-service`} className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">
+                {t("footer.termsOfService")}
               </a>
-              <a href="/cookie-policy" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">
-                Cookie Policy
+              <a href={`/${activeLocale}/cookie-policy`} className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">
+                {t("footer.cookiePolicy")}
               </a>
             </div>
           </div>
@@ -218,13 +202,14 @@ function FooterContent() {
 
 function ContactInfo() {
   const { contactInfo } = useContactInfo()
+  const { t } = useLocale()
 
   return (
     <div className="space-y-3">
       <div className="flex items-start space-x-3">
         <Mail className="h-5 w-5 mt-0.5 text-primary-foreground/60" />
         <div>
-          <p className="text-primary-foreground/80 text-sm">Email</p>
+          <p className="text-primary-foreground/80 text-sm">{t("footer.email")}</p>
           <a
             href={`mailto:${contactInfo.email}`}
             className="text-primary-foreground hover:text-primary-foreground/80 transition-colors"
@@ -237,7 +222,7 @@ function ContactInfo() {
       <div className="flex items-start space-x-3">
         <Phone className="h-5 w-5 mt-0.5 text-primary-foreground/60" />
         <div>
-          <p className="text-primary-foreground/80 text-sm">Phone</p>
+          <p className="text-primary-foreground/80 text-sm">{t("footer.phone")}</p>
           <a
             href={`tel:${contactInfo.phone}`}
             className="text-primary-foreground hover:text-primary-foreground/80 transition-colors"
@@ -250,7 +235,7 @@ function ContactInfo() {
       <div className="flex items-start space-x-3">
         <MapPin className="h-5 w-5 mt-0.5 text-primary-foreground/60" />
         <div>
-          <p className="text-primary-foreground/80 text-sm">Address</p>
+          <p className="text-primary-foreground/80 text-sm">{t("footer.address")}</p>
           <p className="text-primary-foreground leading-relaxed">{contactInfo.address}</p>
         </div>
       </div>
@@ -260,10 +245,11 @@ function ContactInfo() {
 
 function CopyrightInfo() {
   const { contactInfo } = useContactInfo()
+  const { t } = useLocale()
 
   return (
     <div className="text-primary-foreground/60 text-sm">
-      © {new Date().getFullYear()} {contactInfo.businessName}. All rights reserved.
+      © {new Date().getFullYear()} {contactInfo.businessName}. {t("footer.allRightsReserved")}
     </div>
   )
 }

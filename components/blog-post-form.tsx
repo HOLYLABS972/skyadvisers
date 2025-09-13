@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
 import { Save, Eye } from "lucide-react"
+import { auth } from "@/lib/firebase"
 
 interface BlogPostData {
   title: string
@@ -62,9 +63,13 @@ export function BlogPostForm({ initialData, postId }: BlogPostFormProps) {
       const url = postId ? `/api/admin/blog/${postId}` : "/api/admin/blog"
       const method = postId ? "PUT" : "POST"
 
+      const currentUserEmail = auth.currentUser?.email || undefined
       const response = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(currentUserEmail ? { "x-admin-user": JSON.stringify({ email: currentUserEmail }) } : {}),
+        },
         body: JSON.stringify({ ...formData, status }),
       })
 

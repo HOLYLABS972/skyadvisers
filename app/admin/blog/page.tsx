@@ -164,18 +164,31 @@ export default function BlogManagementPage() {
                     </div>
                     <div className="flex space-x-2">
                       <Link href={`/admin/blog/edit/${post.id}`}>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" title="Edit post">
                           <Edit className="h-4 w-4" />
                         </Button>
                       </Link>
-                      <Button variant="outline" size="sm" onClick={() => toggleStatus(post.id, post.status)}>
-                        <Eye className="h-4 w-4" />
+                      {post.status === "published" && (
+                        <Link href={`/${post.locale}/blog/${post.slug}`} target="_blank">
+                          <Button variant="outline" size="sm" title="View post">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                      )}
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => toggleStatus(post.id, post.status)}
+                        title={post.status === "published" ? "Unpublish" : "Publish"}
+                      >
+                        {post.status === "published" ? "Unpublish" : "Publish"}
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleDelete(post.id)}
                         className="text-destructive hover:text-destructive"
+                        title="Delete post"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

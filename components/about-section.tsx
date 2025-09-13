@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { getTranslation } from "@/lib/i18n"
+import { getTranslation, type Locale } from "@/lib/i18n"
 import { Users, Award, Globe } from "lucide-react"
 
 interface AboutSectionProps {
@@ -9,19 +9,7 @@ interface AboutSectionProps {
 }
 
 export function AboutSection({ locale }: AboutSectionProps) {
-  // Hardcoded translations for testing
-  const translations = {
-    en: {
-      "about.title": "About Skyadvisers",
-      "about.description": "We are a team of experienced advisors dedicated to helping CEOs and founders navigate the complex world of business strategy and investment.",
-    },
-    he: {
-      "about.title": "אודות Skyadvisers",
-      "about.description": "אנחנו צוות של יועצים מנוסים המוקדשים לעזור למנכ״לים ומייסדים לנווט בעולם המורכב של אסטרטגיה עסקית והשקעות.",
-    }
-  }
-  
-  const t = (key: string) => translations[locale as keyof typeof translations]?.[key as keyof typeof translations.en] || key
+  const t = (key: string) => getTranslation(key, locale as Locale)
 
   return (
     <section id="about" className="py-20 bg-muted/30">
@@ -40,10 +28,8 @@ export function AboutSection({ locale }: AboutSectionProps) {
                 <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Users className="h-6 w-6 text-secondary" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">Expert Team</h3>
-                <p className="text-sm text-muted-foreground">
-                  Seasoned professionals with decades of combined experience
-                </p>
+                <h3 className="font-semibold text-foreground mb-2">{t("about.features.expertTeam.title")}</h3>
+                <p className="text-sm text-muted-foreground">{t("about.features.expertTeam.desc")}</p>
               </CardContent>
             </Card>
 
@@ -52,8 +38,8 @@ export function AboutSection({ locale }: AboutSectionProps) {
                 <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Award className="h-6 w-6 text-secondary" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">Proven Results</h3>
-                <p className="text-sm text-muted-foreground">Track record of successful exits and funding rounds</p>
+                <h3 className="font-semibold text-foreground mb-2">{t("about.features.provenResults.title")}</h3>
+                <p className="text-sm text-muted-foreground">{t("about.features.provenResults.desc")}</p>
               </CardContent>
             </Card>
 
@@ -62,8 +48,8 @@ export function AboutSection({ locale }: AboutSectionProps) {
                 <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Globe className="h-6 w-6 text-secondary" />
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">Global Reach</h3>
-                <p className="text-sm text-muted-foreground">International network of investors and partners</p>
+                <h3 className="font-semibold text-foreground mb-2">{t("about.features.globalReach.title")}</h3>
+                <p className="text-sm text-muted-foreground">{t("about.features.globalReach.desc")}</p>
               </CardContent>
             </Card>
           </div>

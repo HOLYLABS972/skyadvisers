@@ -6,7 +6,7 @@ import { useState, useEffect } from "react"
 export const dynamic = 'force-dynamic'
 import { AdminLayout } from "@/components/admin-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { FileText, MessageSquare, Users, TrendingUp, Loader2, Settings } from "lucide-react"
+import { FileText, MessageSquare, Users, TrendingUp, Loader2, Settings, Calendar } from "lucide-react"
 
 interface DashboardStats {
   totalBlogPosts: number
@@ -14,6 +14,10 @@ interface DashboardStats {
   draftPosts: number
   thisMonthContacts: number
 }
+
+type ActivityItem =
+  | { type: 'post'; id: string; title: string; status: 'draft' | 'published'; timestamp: string }
+  | { type: 'contact'; id: string; name: string; email: string; timestamp: string }
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats>({
@@ -23,6 +27,7 @@ export default function AdminDashboard() {
     thisMonthContacts: 0,
   })
   const [loading, setLoading] = useState(true)
+  const [activity, setActivity] = useState<ActivityItem[]>([])
 
   useEffect(() => {
     fetchDashboardStats()
@@ -38,15 +43,15 @@ export default function AdminDashboard() {
       const contactsResponse = await fetch("/api/admin/contacts")
       const contactsData = contactsResponse.ok ? await contactsResponse.json() : { contacts: [] }
 
-      const totalBlogPosts = blogData.posts?.length || 0
+      const totalBlogPosts = (blogData.posts || []).filter((post: any) => post.status === 'published').length
       const totalContacts = contactsData.contacts?.length || 0
-      const draftPosts = blogData.posts?.filter((post: any) => !post.published)?.length || 0
+      const draftPosts = (blogData.posts || []).filter((post: any) => post.status === 'draft').length
       
       // Calculate this month's contacts
       const thisMonth = new Date()
       thisMonth.setDate(1)
       const thisMonthContacts = contactsData.contacts?.filter((contact: any) => 
-        new Date(contact.createdAt) >= thisMonth
+        new Date(contact.submittedAt) >= thisMonth
       )?.length || 0
 
       setStats({
@@ -55,6 +60,30 @@ export default function AdminDashboard() {
         draftPosts,
         thisMonthContacts,
       })
+
+      // Build recent activity list (latest posts updates and contact submissions)
+      const postActivities: ActivityItem[] = (blogData.posts || []).map((post: any) => ({
+        type: 'post',
+        id: post.id,
+        title: post.title,
+        status: (post.status === 'published' ? 'published' : 'draft') as 'draft' | 'published',
+        timestamp: post.updatedAt || post.createdAt,
+      }))
+
+      const contactActivities: ActivityItem[] = (contactsData.contacts || []).map((c: any) => ({
+        type: 'contact',
+        id: c.id,
+        name: c.name,
+        email: c.email,
+        timestamp: c.submittedAt,
+      }))
+
+      const merged = [...postActivities, ...contactActivities]
+        .filter((a) => !!a.timestamp)
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        .slice(0, 8)
+
+      setActivity(merged)
     } catch (error) {
       console.error("Failed to fetch dashboard stats:", error)
     } finally {
@@ -134,11 +163,48 @@ export default function AdminDashboard() {
               <CardTitle>Recent Activity</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No recent activity</p>
-                <p className="text-sm">Blog posts and contact forms will appear here</p>
-              </div>
+              {activity.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No recent activity</p>
+                  <p className="text-sm">Blog posts and contact forms will appear here</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {activity.map((item) => (
+                    <div key={`${item.type}-${item.id}`} className="flex items-start justify-between border-b border-border pb-3 last:border-b-0 last:pb-0">
+                      <div className="flex items-start space-x-3">
+                        <div className="mt-0.5">
+                          {item.type === 'post' ? (
+                            <FileText className="h-5 w-5 text-secondary" />
+                          ) : (
+                            <MessageSquare className="h-5 w-5 text-secondary" />
+                          )}
+                        </div>
+                        <div>
+                          {item.type === 'post' ? (
+                            <div>
+                              <p className="text-sm text-foreground">
+                                <span className="font-medium">{item.status === 'published' ? 'Published' : 'Draft updated'}:</span> {item.title}
+                              </p>
+                            </div>
+                          ) : (
+                            <div>
+                              <p className="text-sm text-foreground">
+                                <span className="font-medium">New contact:</span> {item.name} <span className="text-muted-foreground">({item.email})</span>
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center text-xs text-muted-foreground whitespace-nowrap">
+                        <Calendar className="mr-1 h-3 w-3" />
+                        {new Date(item.timestamp).toLocaleString()}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
 

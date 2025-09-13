@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { LanguageToggle } from "@/components/language-toggle"
 import { useLocale } from "@/hooks/use-locale"
-import { getTranslation } from "@/lib/i18n"
+import { getTranslation, type Locale } from "@/lib/i18n"
 import { Menu, X } from "lucide-react"
 
 interface HeaderProps {
@@ -15,26 +15,11 @@ interface HeaderProps {
 export function Header({ locale }: HeaderProps) {
   const { changeLocale } = useLocale()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  
-  // Hardcoded translations for testing
-  const translations = {
-    en: {
-      "nav.services": "Services",
-      "nav.about": "About Us",
-      "nav.testimonials": "Testimonials",
-      "nav.blog": "Blog",
-      "nav.contact": "Contact",
-    },
-    he: {
-      "nav.services": "שירותים",
-      "nav.about": "אודותינו",
-      "nav.testimonials": "המלצות",
-      "nav.blog": "בלוג",
-      "nav.contact": "צור קשר",
-    }
-  }
-  
-  const t = (key: string) => translations[locale as keyof typeof translations]?.[key as keyof typeof translations.en] || key
+  const t = (key: string) => getTranslation(key, locale as Locale)
+
+  // Helpers to link to home sections from any page
+  const homePath = `/${locale}`
+  const linkTo = (hash: string) => `${homePath}#${hash}`
 
   return (
     <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b border-border">
@@ -42,28 +27,28 @@ export function Header({ locale }: HeaderProps) {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/">
+            <Link href={`/${locale}`}>
               <h1 className="text-2xl font-bold text-primary">Skyadvisers</h1>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#services" className="text-foreground hover:text-primary transition-colors">
+            <Link href={linkTo("services")} className="text-foreground hover:text-primary transition-colors">
 {t("nav.services")}
-            </a>
-            <a href="#about" className="text-foreground hover:text-primary transition-colors">
+            </Link>
+            <Link href={linkTo("about")} className="text-foreground hover:text-primary transition-colors">
 {t("nav.about")}
-            </a>
-            <a href="#testimonials" className="text-foreground hover:text-primary transition-colors">
+            </Link>
+            <Link href={linkTo("testimonials")} className="text-foreground hover:text-primary transition-colors">
 {t("nav.testimonials")}
-            </a>
-            <Link href="/blog" className="text-foreground hover:text-primary transition-colors">
+            </Link>
+            <Link href={`/${locale}/blog`} className="text-foreground hover:text-primary transition-colors">
 {t("nav.blog")}
             </Link>
-            <a href="#contact" className="text-foreground hover:text-primary transition-colors">
+            <Link href={linkTo("contact")} className="text-foreground hover:text-primary transition-colors">
 {t("nav.contact")}
-            </a>
+            </Link>
           </nav>
 
           {/* Language Toggle & Mobile Menu */}
@@ -83,41 +68,41 @@ export function Header({ locale }: HeaderProps) {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-border">
-              <a
-                href="#services"
+              <Link
+                href={linkTo("services")}
                 className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
   {t("nav.services")}
-              </a>
-              <a
-                href="#about"
+              </Link>
+              <Link
+                href={linkTo("about")}
                 className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
   {t("nav.about")}
-              </a>
-              <a
-                href="#testimonials"
+              </Link>
+              <Link
+                href={linkTo("testimonials")}
                 className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
   {t("nav.testimonials")}
-              </a>
+              </Link>
               <Link
-                href="/blog"
+                href={`/${locale}/blog`}
                 className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
   {t("nav.blog")}
               </Link>
-              <a
-                href="#contact"
+              <Link
+                href={linkTo("contact")}
                 className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
   {t("nav.contact")}
-              </a>
+              </Link>
             </div>
           </div>
         )}

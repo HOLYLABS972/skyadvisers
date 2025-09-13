@@ -32,10 +32,15 @@ export async function GET(request: NextRequest) {
     const postsQuery = query(collection(db, "blog_posts"), orderBy("createdAt", "desc"))
     const snapshot = await getDocs(postsQuery)
 
-    const posts = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }))
+    const posts = snapshot.docs.map((doc) => {
+      const data = doc.data()
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate?.()?.toISOString() || data.createdAt,
+        updatedAt: data.updatedAt?.toDate?.()?.toISOString() || data.updatedAt,
+      }
+    })
 
     return NextResponse.json({ posts })
   } catch (error) {
@@ -52,10 +57,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Temporarily allow access without authentication for testing
-    // const adminUser = getAdminUserFromHeaders(request)
-    // if (!adminUser) {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    // }
+    // Use admin user from headers if provided to set author email
+    const adminUser = getAdminUserFromHeaders(request)
 
     const body = await request.json()
     const { title, slug, excerpt, content, status, locale } = body
@@ -71,7 +74,7 @@ export async function POST(request: NextRequest) {
       content: content.trim(),
       status: status || "draft",
       locale: locale || "en",
-      author: "admin@skyadvisers.com", // Temporarily hardcoded since auth is disabled
+      author: adminUser?.email || "info@skyadvisers.com",
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     }
