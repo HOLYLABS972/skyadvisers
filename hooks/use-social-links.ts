@@ -1,6 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { db } from "@/lib/firebase"
+import { doc, onSnapshot } from "firebase/firestore"
 
 interface SocialLinks {
   facebook?: string
@@ -19,22 +21,32 @@ export function useSocialLinks() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchSocialLinks()
-  }, [])
-
-  const fetchSocialLinks = async () => {
-    try {
-      const response = await fetch("/api/contact-info")
-      if (response.ok) {
-        const data = await response.json()
-        setSocialLinks(data.socialLinks || {})
-      }
-    } catch (error) {
-      console.error("Failed to fetch social links:", error)
-    } finally {
+    if (!db) {
       setLoading(false)
+      return
     }
-  }
+
+    const docRef = doc(db, "site_settings", "contact_info")
+    const unsubscribe = onSnapshot(
+      docRef,
+      (snapshot) => {
+        const data = snapshot.data() as any
+        setSocialLinks({
+          facebook: data?.facebook || "",
+          twitter: data?.twitter || "",
+          linkedin: data?.linkedin || "",
+          youtube: data?.youtube || "",
+        })
+        setLoading(false)
+      },
+      (error) => {
+        console.error("Failed to subscribe to social links:", error)
+        setLoading(false)
+      }
+    )
+
+    return () => unsubscribe()
+  }, [])
 
   return { socialLinks, loading }
 }

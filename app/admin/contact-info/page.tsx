@@ -15,6 +15,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2, Save, Globe, Phone, MapPin, Mail, Facebook, Twitter, Linkedin, Youtube } from "lucide-react"
+import { db } from "@/lib/firebase"
+import { doc, getDoc, setDoc } from "firebase/firestore"
 
 interface ContactInfo {
   email: string
@@ -60,10 +62,29 @@ export default function SettingsPage() {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch("/api/admin/contact-info")
-      if (response.ok) {
-        const data = await response.json()
-        setSettings(data)
+      if (!db) {
+        setLoading(false)
+        return
+      }
+
+      const docRef = doc(db, "site_settings", "contact_info")
+      const snap = await getDoc(docRef)
+      const data = snap.data() as any
+      if (data) {
+        setSettings({
+          contactInfo: {
+            email: data.email || "",
+            phone: data.phone || "",
+            address: data.address || "",
+            businessName: data.businessName || "",
+          },
+          socialLinks: {
+            facebook: data.facebook || "",
+            twitter: data.twitter || "",
+            linkedin: data.linkedin || "",
+            youtube: data.youtube || "",
+          },
+        })
       }
     } catch (error) {
       console.error("Failed to fetch settings:", error)
@@ -77,22 +98,24 @@ export default function SettingsPage() {
     setSaving(true)
 
     try {
-      const response = await fetch("/api/admin/contact-info", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(settings),
-      })
+      if (!db) throw new Error('Firestore not configured on client')
 
-      if (response.ok) {
-        toast({
-          title: "Success",
-          description: "Settings updated successfully",
-        })
-      } else {
-        throw new Error("Failed to update settings")
-      }
+      const docRef = doc(db, "site_settings", "contact_info")
+      await setDoc(docRef, {
+        email: settings.contactInfo.email,
+        phone: settings.contactInfo.phone,
+        address: settings.contactInfo.address,
+        businessName: settings.contactInfo.businessName,
+        facebook: settings.socialLinks.facebook || "",
+        twitter: settings.socialLinks.twitter || "",
+        linkedin: settings.socialLinks.linkedin || "",
+        youtube: settings.socialLinks.youtube || "",
+        updatedAt: new Date().toISOString(),
+      })
+      toast({
+        title: "Success",
+        description: "Settings updated successfully",
+      })
     } catch (error) {
       toast({
         title: "Error",
