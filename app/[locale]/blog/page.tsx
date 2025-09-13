@@ -33,7 +33,7 @@ export default function BlogPage() {
       "blog.readMore": "Read more",
     },
     he: {
-      "blog.title": "תובנות וExpertיות",
+      "blog.title": "בלוג",
       "blog.subtitle": "הישארו מעודכנים עם התובנות האחרונות על אסטרטגיה עסקית, מגמות השקעה והדרכת סטארט-אפים מהיועצים המומחים שלנו.",
       "blog.search": "חפש מאמרים...",
       "blog.readMore": "קרא עוד",
