@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
 import { AdminLayout } from "@/components/admin-layout"
 import { BlogPostForm } from "@/components/blog-post-form"
+import { db } from "@/lib/firebase"
+import { doc, getDoc } from "firebase/firestore"
 
 interface BlogPost {
   id: string
@@ -28,10 +30,20 @@ export default function EditBlogPostPage() {
 
   const fetchPost = async (id: string) => {
     try {
-      const response = await fetch(`/api/admin/blog/${id}`)
-      if (response.ok) {
-        const data = await response.json()
-        setPost(data.post)
+      if (!db) return
+      const ref = doc(db, 'blog_posts', id)
+      const snap = await getDoc(ref)
+      if (snap.exists()) {
+        const data: any = snap.data()
+        setPost({
+          id,
+          title: data.title,
+          slug: data.slug,
+          excerpt: data.excerpt,
+          content: data.content,
+          status: data.status,
+          locale: data.locale,
+        })
       }
     } catch (error) {
       console.error("Error fetching blog post:", error)

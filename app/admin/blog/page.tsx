@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import { Plus, Edit, Trash2, Eye, Calendar } from "lucide-react"
+import { db } from "@/lib/firebase"
+import { collection, getDocs, query, orderBy, deleteDoc, doc, updateDoc } from "firebase/firestore"
 
 interface BlogPost {
   id: string
@@ -33,11 +35,25 @@ export default function BlogManagementPage() {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("/api/admin/blog")
-      if (response.ok) {
-        const data = await response.json()
-        setPosts(data.posts || [])
-      }
+      if (!db) return
+      const postsQuery = query(collection(db, "blog_posts"), orderBy("createdAt", "desc"))
+      const snapshot = await getDocs(postsQuery)
+      const mapped = snapshot.docs.map((d) => {
+        const data: any = d.data()
+        return {
+          id: d.id,
+          title: data.title,
+          slug: data.slug,
+          excerpt: data.excerpt,
+          content: data.content,
+          status: data.status,
+          locale: data.locale,
+          author: data.author,
+          createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt,
+          updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : data.updatedAt,
+        }
+      })
+      setPosts(mapped)
     } catch (error) {
       toast({
         title: "Error",
@@ -53,19 +69,10 @@ export default function BlogManagementPage() {
     if (!confirm("Are you sure you want to delete this blog post?")) return
 
     try {
-      const response = await fetch(`/api/admin/blog/${id}`, {
-        method: "DELETE",
-      })
-
-      if (response.ok) {
-        setPosts(posts.filter((post) => post.id !== id))
-        toast({
-          title: "Success",
-          description: "Blog post deleted successfully",
-        })
-      } else {
-        throw new Error("Failed to delete")
-      }
+      if (!db) throw new Error('Firestore not configured')
+      await deleteDoc(doc(db, "blog_posts", id))
+      setPosts(posts.filter((post) => post.id !== id))
+      toast({ title: "Success", description: "Blog post deleted successfully" })
     } catch (error) {
       toast({
         title: "Error",
@@ -79,21 +86,10 @@ export default function BlogManagementPage() {
     const newStatus = currentStatus === "published" ? "draft" : "published"
 
     try {
-      const response = await fetch(`/api/admin/blog/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
-      })
-
-      if (response.ok) {
-        setPosts(posts.map((post) => (post.id === id ? { ...post, status: newStatus as any } : post)))
-        toast({
-          title: "Success",
-          description: `Blog post ${newStatus === "published" ? "published" : "unpublished"} successfully`,
-        })
-      } else {
-        throw new Error("Failed to update status")
-      }
+      if (!db) throw new Error('Firestore not configured')
+      await updateDoc(doc(db, "blog_posts", id), { status: newStatus })
+      setPosts(posts.map((post) => (post.id === id ? { ...post, status: newStatus as any } : post)))
+      toast({ title: "Success", description: `Blog post ${newStatus === "published" ? "published" : "unpublished"} successfully` })
     } catch (error) {
       toast({
         title: "Error",

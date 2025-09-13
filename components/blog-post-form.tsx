@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
 import { Save, Eye } from "lucide-react"
-import { auth } from "@/lib/firebase"
+import { auth, db } from "@/lib/firebase"
+import { collection, addDoc, doc, updateDoc, serverTimestamp, getDoc } from "firebase/firestore"
 
 interface BlogPostData {
   title: string
@@ -60,28 +61,39 @@ export function BlogPostForm({ initialData, postId }: BlogPostFormProps) {
     setIsSubmitting(true)
 
     try {
-      const url = postId ? `/api/admin/blog/${postId}` : "/api/admin/blog"
-      const method = postId ? "PUT" : "POST"
+      if (!db) throw new Error('Firestore not configured')
+      const author = auth?.currentUser?.email || 'admin@skyadvisers.com'
 
-      const currentUserEmail = auth.currentUser?.email || undefined
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          ...(currentUserEmail ? { "x-admin-user": JSON.stringify({ email: currentUserEmail }) } : {}),
-        },
-        body: JSON.stringify({ ...formData, status }),
-      })
-
-      if (response.ok) {
-        toast({
-          title: "Success",
-          description: `Blog post ${status === "published" ? "published" : "saved as draft"} successfully`,
+      if (postId) {
+        const ref = doc(db, 'blog_posts', postId)
+        await updateDoc(ref, {
+          title: formData.title.trim(),
+          slug: formData.slug.trim().toLowerCase(),
+          excerpt: formData.excerpt.trim(),
+          content: formData.content.trim(),
+          status,
+          locale: formData.locale,
+          updatedAt: serverTimestamp(),
         })
-        router.push("/admin/blog")
       } else {
-        throw new Error("Failed to save blog post")
+        await addDoc(collection(db, 'blog_posts'), {
+          title: formData.title.trim(),
+          slug: formData.slug.trim().toLowerCase(),
+          excerpt: formData.excerpt.trim(),
+          content: formData.content.trim(),
+          status,
+          locale: formData.locale,
+          author,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        })
       }
+
+      toast({
+        title: "Success",
+        description: `Blog post ${status === "published" ? "published" : "saved as draft"} successfully`,
+      })
+      router.push("/admin/blog")
     } catch (error) {
       toast({
         title: "Error",

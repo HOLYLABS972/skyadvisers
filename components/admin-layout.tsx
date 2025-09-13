@@ -25,11 +25,18 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const { toast } = useToast()
 
   useEffect(() => {
+    // If Firebase Auth isn't configured, avoid calling onAuthStateChanged on null
+    if (!auth) {
+      console.warn("Firebase Auth not configured. Skipping admin auth listener.")
+      setLoading(false)
+      setUser(null)
+      return
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user)
       setLoading(false)
 
-      // Redirect to login if not authenticated
       if (!user) {
         router.push("/admin/login")
       }

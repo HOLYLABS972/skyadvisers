@@ -7,6 +7,8 @@ export const dynamic = 'force-dynamic'
 import { AdminLayout } from "@/components/admin-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileText, MessageSquare, Users, TrendingUp, Loader2, Settings, Calendar } from "lucide-react"
+import { db } from "@/lib/firebase"
+import { collection, getDocs, query, orderBy } from "firebase/firestore"
 
 interface DashboardStats {
   totalBlogPosts: number
@@ -35,47 +37,46 @@ export default function AdminDashboard() {
 
   const fetchDashboardStats = async () => {
     try {
-      // Fetch blog posts count
-      const blogResponse = await fetch("/api/admin/blog")
-      const blogData = blogResponse.ok ? await blogResponse.json() : { posts: [] }
-      
-      // Fetch contacts count
-      const contactsResponse = await fetch("/api/admin/contacts")
-      const contactsData = contactsResponse.ok ? await contactsResponse.json() : { contacts: [] }
+      if (!db) {
+        setLoading(false)
+        return
+      }
 
-      const totalBlogPosts = (blogData.posts || []).filter((post: any) => post.status === 'published').length
-      const totalContacts = contactsData.contacts?.length || 0
-      const draftPosts = (blogData.posts || []).filter((post: any) => post.status === 'draft').length
-      
-      // Calculate this month's contacts
+      // Blog posts
+      const postsQuery = query(collection(db, "blog_posts"), orderBy("createdAt", "desc"))
+      const postsSnap = await getDocs(postsQuery)
+      const posts = postsSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as any[]
+
+      // Contacts
+      const contactsQuery = query(collection(db, "contacts"), orderBy("submittedAt", "desc"))
+      const contactsSnap = await getDocs(contactsQuery)
+      const contacts = contactsSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as any[]
+
+      const totalBlogPosts = posts.filter((p) => p.status === 'published').length
+      const draftPosts = posts.filter((p) => p.status === 'draft').length
+      const totalContacts = contacts.length
+
       const thisMonth = new Date()
       thisMonth.setDate(1)
-      const thisMonthContacts = contactsData.contacts?.filter((contact: any) => 
-        new Date(contact.submittedAt) >= thisMonth
-      )?.length || 0
+      const thisMonthContacts = contacts.filter((c) => (c.submittedAt?.toDate ? c.submittedAt.toDate() : new Date(c.submittedAt)) >= thisMonth).length
 
-      setStats({
-        totalBlogPosts,
-        totalContacts,
-        draftPosts,
-        thisMonthContacts,
-      })
+      setStats({ totalBlogPosts, totalContacts, draftPosts, thisMonthContacts })
 
-      // Build recent activity list (latest posts updates and contact submissions)
-      const postActivities: ActivityItem[] = (blogData.posts || []).map((post: any) => ({
+      const postActivities: ActivityItem[] = posts.map((post) => ({
         type: 'post',
         id: post.id,
         title: post.title,
-        status: (post.status === 'published' ? 'published' : 'draft') as 'draft' | 'published',
-        timestamp: post.updatedAt || post.createdAt,
+        status: (post.status === 'published' ? 'published' : 'draft'),
+        timestamp: (post.updatedAt?.toDate ? post.updatedAt.toDate().toISOString() : post.updatedAt) ||
+                  (post.createdAt?.toDate ? post.createdAt.toDate().toISOString() : post.createdAt),
       }))
 
-      const contactActivities: ActivityItem[] = (contactsData.contacts || []).map((c: any) => ({
+      const contactActivities: ActivityItem[] = contacts.map((c) => ({
         type: 'contact',
         id: c.id,
         name: c.name,
         email: c.email,
-        timestamp: c.submittedAt,
+        timestamp: c.submittedAt?.toDate ? c.submittedAt.toDate().toISOString() : c.submittedAt,
       }))
 
       const merged = [...postActivities, ...contactActivities]

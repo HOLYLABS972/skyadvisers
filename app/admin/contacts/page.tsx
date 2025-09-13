@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
+import { db } from "@/lib/firebase"
+import { collection, getDocs, query, orderBy, doc, updateDoc } from "firebase/firestore"
 import { ContactDetailModal } from "@/components/contact-detail-modal"
 import { Mail, Search, Filter, Calendar, User, MessageSquare } from "lucide-react"
 
@@ -45,11 +47,24 @@ export default function ContactFormsPage() {
 
   const fetchContacts = async () => {
     try {
-      const response = await fetch("/api/admin/contacts")
-      if (response.ok) {
-        const data = await response.json()
-        setContacts(data.contacts || [])
-      }
+      if (!db) return
+      const q = query(collection(db, 'contacts'), orderBy('submittedAt', 'desc'))
+      const snap = await getDocs(q)
+      const mapped: ContactForm[] = snap.docs.map((d) => {
+        const data: any = d.data()
+        return {
+          id: d.id,
+          name: data.name,
+          email: data.email,
+          message: data.message,
+          locale: data.locale,
+          submittedAt: data.submittedAt?.toDate ? data.submittedAt.toDate().toISOString() : data.submittedAt,
+          clientTimestamp: data.clientTimestamp,
+          status: data.status,
+          source: data.source,
+        }
+      })
+      setContacts(mapped)
     } catch (error) {
       toast({
         title: "Error",
@@ -82,21 +97,10 @@ export default function ContactFormsPage() {
 
   const updateContactStatus = async (id: string, status: "new" | "read" | "responded") => {
     try {
-      const response = await fetch(`/api/admin/contacts/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
-      })
-
-      if (response.ok) {
-        setContacts(contacts.map((contact) => (contact.id === id ? { ...contact, status } : contact)))
-        toast({
-          title: "Success",
-          description: "Contact status updated successfully",
-        })
-      } else {
-        throw new Error("Failed to update status")
-      }
+      if (!db) throw new Error('Firestore not configured')
+      await updateDoc(doc(db, 'contacts', id), { status })
+      setContacts(contacts.map((contact) => (contact.id === id ? { ...contact, status } : contact)))
+      toast({ title: "Success", description: "Contact status updated successfully" })
     } catch (error) {
       toast({
         title: "Error",
