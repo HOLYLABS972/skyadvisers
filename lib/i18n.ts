@@ -18,10 +18,15 @@ export const translations = {
       "Empowering CEOs and founders with expert guidance on investment, startup evaluation, and business strategy.",
     "hero.cta": "Get Started",
     "hero.badge": "Strategic Business Advisory",
+    "hero.welcome.title": "Welcome to Skyadvisers",
+    "hero.welcome.subtitle": "Your trusted business advisory partner",
     "hero.stats.startups": "Startups Advised",
     "hero.stats.funding": "Funding Raised",
     "hero.stats.years": "Years Experience",
     "hero.stats.success": "Success Rate",
+
+    // Clients
+    "clients.title": "Our Clients",
 
     // Services
     "services.title": "Our Services",
@@ -119,10 +124,15 @@ export const translations = {
     "hero.subtitle": "מעצימים מנכ״לים ומייסדים עם הדרכה מומחית בהשקעות, הערכת סטארט-אפים ואסטרטגיה עסקית.",
     "hero.cta": "התחל עכשיו",
     "hero.badge": "ייעוץ עסקי אסטרטגי",
+    "hero.welcome.title": "ברוכים הבאים ל-Skyadvisers",
+    "hero.welcome.subtitle": "שותף הייעוץ העסקי המהימן שלכם",
     "hero.stats.startups": "סטארטאפים שליווינו",
     "hero.stats.funding": "מימון שגויס",
     "hero.stats.years": "שנות ניסיון",
     "hero.stats.success": "שיעור הצלחה",
+
+    // Clients
+    "clients.title": "הלקוחות שלנו",
 
     // Services
     "services.title": "השירותים שלנו",
@@ -216,7 +226,7 @@ export function getTranslation(key: string, locale: Locale): string {
     return key
   }
   
-  const result = translation[key]
+  const result = (translation as any)[key]
   if (result === undefined) {
     console.warn(`Translation key "${key}" not found for locale "${locale}"`)
     return key

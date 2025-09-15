@@ -6,7 +6,7 @@ import { useState, useEffect } from "react"
 export const dynamic = 'force-dynamic'
 import { AdminLayout } from "@/components/admin-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { FileText, MessageSquare, Users, TrendingUp, Loader2, Settings, Calendar, Home, Shield } from "lucide-react"
+import { FileText, MessageSquare, Users, TrendingUp, Loader2, Settings, Calendar } from "lucide-react"
 import { db } from "@/lib/firebase"
 import { collection, getDocs, query, orderBy } from "firebase/firestore"
 
@@ -214,28 +214,6 @@ export default function AdminDashboard() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <a
-                href="/admin/landing"
-                className="flex items-center p-4 border border-border rounded-lg hover:bg-muted transition-colors"
-              >
-                <Home className="h-8 w-8 text-secondary mr-4" />
-                <div>
-                  <h3 className="font-medium">Edit Landing Page</h3>
-                  <p className="text-sm text-muted-foreground">Update homepage content and sections</p>
-                </div>
-              </a>
-
-              <a
-                href="/admin/privacy"
-                className="flex items-center p-4 border border-border rounded-lg hover:bg-muted transition-colors"
-              >
-                <Shield className="h-8 w-8 text-secondary mr-4" />
-                <div>
-                  <h3 className="font-medium">Edit Privacy Policy</h3>
-                  <p className="text-sm text-muted-foreground">Update privacy policy content</p>
-                </div>
-              </a>
-
               <a
                 href="/admin/blog/new"
                 className="flex items-center p-4 border border-border rounded-lg hover:bg-muted transition-colors"

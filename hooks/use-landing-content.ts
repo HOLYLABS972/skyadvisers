@@ -4,6 +4,12 @@ import { useState, useEffect } from "react"
 import { db } from "@/lib/firebase"
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore"
 
+interface Client {
+  id: string
+  name: string
+  logoUrl: string
+}
+
 interface LandingContent {
   id: string
   heroTitle: string
@@ -11,6 +17,7 @@ interface LandingContent {
   heroDescription: string
   heroImageUrl?: string
   heroImagePath?: string
+  clients?: Client[]
   servicesTitle: string
   servicesSubtitle: string
   aboutTitle: string
@@ -29,56 +36,57 @@ export function useLandingContent() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        if (!db) {
+          console.warn("Firebase not configured")
+          setLoading(false)
+          return
+        }
+
+        const docRef = doc(db, "site_content", "landing")
+        const docSnap = await getDoc(docRef)
+
+        if (docSnap.exists()) {
+          const data = docSnap.data()
+          setContent({
+            id: docSnap.id,
+            ...data,
+            updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : data.updatedAt,
+          } as LandingContent)
+        } else {
+          // Set default content if no document exists
+          const defaultContent: LandingContent = {
+            id: "landing",
+            heroTitle: "",
+            heroSubtitle: "",
+            heroDescription: "We provide expert guidance to help your business grow and succeed in today's competitive market.",
+            heroImageUrl: "",
+            heroImagePath: "",
+            clients: [],
+            servicesTitle: "Our Services",
+            servicesSubtitle: "Comprehensive business solutions tailored to your needs",
+            aboutTitle: "About Us",
+            aboutSubtitle: "Experienced professionals dedicated to your success",
+            aboutDescription: "With years of experience in business advisory, we help companies navigate complex challenges and achieve sustainable growth.",
+            testimonialsTitle: "What Our Clients Say",
+            testimonialsSubtitle: "Success stories from businesses we've helped",
+            contactTitle: "Get In Touch",
+            contactSubtitle: "Ready to take your business to the next level?",
+            contactDescription: "Contact us today to discuss how we can help your business grow and succeed.",
+            updatedAt: new Date().toISOString(),
+          }
+          setContent(defaultContent)
+        }
+      } catch (error) {
+        console.error("Failed to fetch landing content:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
     fetchContent()
   }, [])
-
-  const fetchContent = async () => {
-    try {
-      if (!db) {
-        console.warn("Firebase not configured")
-        setLoading(false)
-        return
-      }
-
-      const docRef = doc(db, "site_content", "landing")
-      const docSnap = await getDoc(docRef)
-
-      if (docSnap.exists()) {
-        const data = docSnap.data()
-        setContent({
-          id: docSnap.id,
-          ...data,
-          updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : data.updatedAt,
-        } as LandingContent)
-      } else {
-        // Set default content if no document exists
-        const defaultContent: LandingContent = {
-          id: "landing",
-          heroTitle: "Welcome to Skyadvisers",
-          heroSubtitle: "Your trusted business advisory partner",
-          heroDescription: "We provide expert guidance to help your business grow and succeed in today's competitive market.",
-          heroImageUrl: "",
-          heroImagePath: "",
-          servicesTitle: "Our Services",
-          servicesSubtitle: "Comprehensive business solutions tailored to your needs",
-          aboutTitle: "About Us",
-          aboutSubtitle: "Experienced professionals dedicated to your success",
-          aboutDescription: "With years of experience in business advisory, we help companies navigate complex challenges and achieve sustainable growth.",
-          testimonialsTitle: "What Our Clients Say",
-          testimonialsSubtitle: "Success stories from businesses we've helped",
-          contactTitle: "Get In Touch",
-          contactSubtitle: "Ready to take your business to the next level?",
-          contactDescription: "Contact us today to discuss how we can help your business grow and succeed.",
-          updatedAt: new Date().toISOString(),
-        }
-        setContent(defaultContent)
-      }
-    } catch (error) {
-      console.error("Failed to fetch landing content:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const updateContent = async (newContent: Partial<LandingContent>) => {
     if (!db) {
@@ -92,8 +100,45 @@ export function useLandingContent() {
     }
     
     await setDoc(docRef, updateData, { merge: true })
-    await fetchContent() // Refresh the content
+    
+    // Refresh the content by refetching
+    try {
+      const docSnap = await getDoc(docRef)
+      if (docSnap.exists()) {
+        const data = docSnap.data()
+        setContent({
+          id: docSnap.id,
+          ...data,
+          updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : data.updatedAt,
+        } as LandingContent)
+      }
+    } catch (error) {
+      console.error("Failed to refresh content after update:", error)
+    }
   }
 
-  return { content, loading, refetch: fetchContent, updateContent }
+  const refetch = async () => {
+    if (!db) {
+      console.warn("Firebase not configured")
+      return
+    }
+
+    try {
+      const docRef = doc(db, "site_content", "landing")
+      const docSnap = await getDoc(docRef)
+      
+      if (docSnap.exists()) {
+        const data = docSnap.data()
+        setContent({
+          id: docSnap.id,
+          ...data,
+          updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toISOString() : data.updatedAt,
+        } as LandingContent)
+      }
+    } catch (error) {
+      console.error("Failed to refetch content:", error)
+    }
+  }
+
+  return { content, loading, refetch, updateContent }
 }
