@@ -80,14 +80,6 @@ export function ClientsSection({ locale }: ClientsSectionProps) {
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance">
             {t("clients.title")}
           </h2>
-          {isLoggedIn && (
-            <ClientModal onSave={addClient} trigger={
-              <Button className="mt-4">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Client
-              </Button>
-            } />
-          )}
         </div>
 
         {/* Client Logos */}
@@ -193,18 +185,42 @@ export function ClientsSection({ locale }: ClientsSectionProps) {
                 )}
               </div>
             ))}
+            
+            {/* Add Client Button */}
+            {isLoggedIn && (
+              <div className="flex flex-col items-center justify-center">
+                <ClientModal onSave={addClient} trigger={
+                  <Button variant="outline" className="h-16 w-full border-dashed border-2 border-muted-foreground/30 hover:border-muted-foreground/50 hover:bg-muted/50 transition-all duration-200">
+                    <Plus className="h-6 w-6 mr-2" />
+                    Add Client
+                  </Button>
+                } />
+              </div>
+            )}
           </div>
         ) : (
           <div className="text-center">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center opacity-60">
               {/* Placeholder for client logos */}
-              {Array.from({ length: 6 }).map((_, index) => (
+              {Array.from({ length: 5 }).map((_, index) => (
                 <div key={index} className="flex items-center justify-center h-16 bg-muted rounded-lg">
                   <span className="text-muted-foreground text-sm font-medium">
                     Logo {index + 1}
                   </span>
                 </div>
               ))}
+              
+              {/* Add Client Button for empty state */}
+              {isLoggedIn && (
+                <div className="flex items-center justify-center">
+                  <ClientModal onSave={addClient} trigger={
+                    <Button variant="outline" className="h-16 w-full border-dashed border-2 border-muted-foreground/30 hover:border-muted-foreground/50 hover:bg-muted/50 transition-all duration-200">
+                      <Plus className="h-6 w-6 mr-2" />
+                      Add Client
+                    </Button>
+                  } />
+                </div>
+              )}
             </div>
           </div>
         )}

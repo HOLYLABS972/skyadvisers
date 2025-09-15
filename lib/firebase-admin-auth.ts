@@ -1,9 +1,9 @@
 import { getAuth } from "firebase-admin/auth"
-import { getAdminApp } from "./firebase-admin"
+import initializeFirebaseAdmin from "./firebase-admin"
 
 export const verifyAuthToken = async (token: string) => {
   try {
-    const app = await getAdminApp()
+    const app = initializeFirebaseAdmin()
     if (!app) {
       return { user: null, error: "Firebase Admin not available" }
     }

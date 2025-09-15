@@ -23,9 +23,13 @@ interface BlogPost {
   locale: "en" | "he"
 }
 
-export default function BlogPage() {
+interface BlogPageProps {
+  params: { locale: string }
+}
+
+export default function BlogPage({ params }: BlogPageProps) {
   const { locale } = useLocale()
-  const { content: heroContent } = useLandingContent()
+  const { content: heroContent } = useLandingContent(params.locale)
   
   // Hardcoded translations for testing
   const translations = {

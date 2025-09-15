@@ -6,13 +6,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useContactInfo } from "@/hooks/use-contact-info"
 import { usePrivacyContent } from "@/hooks/use-privacy-content"
 
-export default function PrivacyPolicyPage() {
+interface PrivacyPolicyPageProps {
+  params: { locale: string }
+}
+
+export default function PrivacyPolicyPage({ params }: PrivacyPolicyPageProps) {
   const { contactInfo } = useContactInfo()
   const { content: privacyContent, loading } = usePrivacyContent()
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header locale={params.locale} />
       
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-4xl mx-auto">

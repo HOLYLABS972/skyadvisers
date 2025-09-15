@@ -8,6 +8,8 @@ interface Service {
   id: string
   title: string
   description: string
+  imageUrl: string
+  imagePath: string
 }
 
 interface ServicesContent {
@@ -49,17 +51,23 @@ export function useServicesContent(locale: string) {
               {
                 id: 'investment',
                 title: locale === 'he' ? 'ייעוץ השקעות' : 'Investment Advisory',
-                description: locale === 'he' ? 'הדרכה מומחית באסטרטגיות מימון ויחסי משקיעים.' : 'Expert guidance on funding strategies and investor relations.'
+                description: locale === 'he' ? 'הדרכה מומחית באסטרטגיות מימון ויחסי משקיעים.' : 'Expert guidance on funding strategies and investor relations.',
+                imageUrl: '',
+                imagePath: ''
               },
               {
                 id: 'evaluation',
                 title: locale === 'he' ? 'הערכת סטארט-אפים' : 'Startup Evaluation',
-                description: locale === 'he' ? 'הערכה מקיפה של פוטנציאל סטארט-אפים וכדאיות שוק.' : 'Comprehensive assessment of startup potential and market viability.'
+                description: locale === 'he' ? 'הערכה מקיפה של פוטנציאל סטארט-אפים וכדאיות שוק.' : 'Comprehensive assessment of startup potential and market viability.',
+                imageUrl: '',
+                imagePath: ''
               },
               {
                 id: 'strategy',
                 title: locale === 'he' ? 'אסטרטגיה עסקית' : 'Business Strategy',
-                description: locale === 'he' ? 'תכנון אסטרטגי וביצוע לצמיחה בת קיימא.' : 'Strategic planning and execution for sustainable growth.'
+                description: locale === 'he' ? 'תכנון אסטרטגי וביצוע לצמיחה בת קיימא.' : 'Strategic planning and execution for sustainable growth.',
+                imageUrl: '',
+                imagePath: ''
               }
             ],
             updatedAt: new Date().toISOString(),
