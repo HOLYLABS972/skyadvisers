@@ -35,7 +35,7 @@ export function useAboutContent(locale: string) {
         return
       }
 
-      const docRef = doc(db, "site_content", `about_${locale}`)
+        const docRef = doc(db, "site_content", "about_shared")
       const docSnap = await getDoc(docRef)
 
       if (docSnap.exists()) {
@@ -47,7 +47,7 @@ export function useAboutContent(locale: string) {
         } as AboutContent)
       } else {
         const defaultContent: AboutContent = {
-          id: `about_${locale}`,
+            id: "about_shared",
           sectionTitle: locale === 'he' ? "אודותינו" : "About Us",
           sectionSubtitle: locale === 'he' ? "אנשי מקצוע מנוסים המוקדשים להצלחה שלכם" : "Experienced professionals dedicated to your success",
           description: locale === 'he' ? "עם שנים של ניסיון בייעוץ עסקי, אנחנו עוזרים לחברות לנווט באתגרים מורכבים ולהשיג צמיחה בת קיימא. הצוות שלנו מביא ידע עמוק בתעשייה ותוצאות מוכחות." : "With years of experience in business advisory, we help companies navigate complex challenges and achieve sustainable growth. Our team brings deep industry knowledge and proven results.",
@@ -86,7 +86,7 @@ export function useAboutContent(locale: string) {
       throw new Error("Firebase not configured")
     }
 
-    const docRef = doc(db, "site_content", `about_${locale}`)
+        const docRef = doc(db, "site_content", "about_shared")
     const updateData = {
       ...newContent,
       updatedAt: serverTimestamp(),

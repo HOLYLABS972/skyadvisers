@@ -18,7 +18,7 @@ export const translations = {
       "Empowering CEOs and founders with expert guidance on investment, startup evaluation, and business strategy.",
     "hero.cta": "Get Started",
     "hero.badge": "Strategic Business Advisory",
-    "hero.welcome.title": "Welcome to Skyadvisers",
+    "hero.welcome.title": "Welcome to Skyadvisors",
     "hero.welcome.subtitle": "Your trusted business advisory partner",
     "hero.stats.startups": "Startups Advised",
     "hero.stats.funding": "Funding Raised",
@@ -38,7 +38,7 @@ export const translations = {
     "services.strategy.description": "Strategic planning and execution for sustainable growth.",
 
     // About
-    "about.title": "About Skyadvisers",
+    "about.title": "About Skyadvisors",
     "about.description":
       "We are a team of experienced advisors dedicated to helping CEOs and founders navigate the complex world of business strategy and investment.",
     "about.features.expertTeam.title": "Expert Team",
@@ -53,7 +53,7 @@ export const translations = {
     "testimonials.items.0.name": "Sarah Chen",
     "testimonials.items.0.title": "CEO, TechFlow",
     "testimonials.items.0.content":
-      "Skyadvisers helped us navigate our Series A funding round with incredible expertise. Their strategic guidance was invaluable.",
+      "Skyadvisors helped us navigate our Series A funding round with incredible expertise. Their strategic guidance was invaluable.",
     "testimonials.items.1.name": "David Rodriguez",
     "testimonials.items.1.title": "Founder, InnovateLab",
     "testimonials.items.1.content":
@@ -61,7 +61,7 @@ export const translations = {
     "testimonials.items.2.name": "Rachel Kim",
     "testimonials.items.2.title": "CEO, DataVision",
     "testimonials.items.2.content":
-      "Professional, insightful, and results-driven. Skyadvisers exceeded our expectations in every aspect of their service.",
+      "Professional, insightful, and results-driven. Skyadvisors exceeded our expectations in every aspect of their service.",
 
     // Blog
     "blog.title": "Insights & Expertise",
@@ -124,7 +124,7 @@ export const translations = {
     "hero.subtitle": "מעצימים מנכ״לים ומייסדים עם הדרכה מומחית בהשקעות, הערכת סטארט-אפים ואסטרטגיה עסקית.",
     "hero.cta": "התחל עכשיו",
     "hero.badge": "ייעוץ עסקי אסטרטגי",
-    "hero.welcome.title": "ברוכים הבאים ל-Skyadvisers",
+      "hero.welcome.title": "ברוכים הבאים ל-Skyadvisors",
     "hero.welcome.subtitle": "שותף הייעוץ העסקי המהימן שלכם",
     "hero.stats.startups": "סטארטאפים שליווינו",
     "hero.stats.funding": "מימון שגויס",
@@ -144,7 +144,7 @@ export const translations = {
     "services.strategy.description": "תכנון אסטרטגי וביצוע לצמיחה בת קיימא.",
 
     // About
-    "about.title": "אודות Skyadvisers",
+    "about.title": "אודות Skyadvisors",
     "about.description":
       "אנחנו צוות של יועצים מנוסים המוקדשים לעזור למנכ״לים ומייסדים לנווט בעולם המורכב של אסטרטגיה עסקית והשקעות.",
     "about.features.expertTeam.title": "צוות מומחים",
@@ -159,7 +159,7 @@ export const translations = {
     "testimonials.items.0.name": "Sarah Chen",
     "testimonials.items.0.title": "מנכ״לית, TechFlow",
     "testimonials.items.0.content":
-      "Skyadvisers סייעו לנו לנווט את סבב גיוס ה‑Series A במקצועיות יוצאת דופן. ההכוונה האסטרטגית שלהם הייתה בלתי‑החלפה.",
+      "Skyadvisors סייעו לנו לנווט את סבב גיוס ה‑Series A במקצועיות יוצאת דופן. ההכוונה האסטרטגית שלהם הייתה בלתי‑החלפה.",
     "testimonials.items.1.name": "David Rodriguez",
     "testimonials.items.1.title": "מייסד, InnovateLab",
     "testimonials.items.1.content":
@@ -167,7 +167,7 @@ export const translations = {
     "testimonials.items.2.name": "Rachel Kim",
     "testimonials.items.2.title": "מנכ״לית, DataVision",
     "testimonials.items.2.content":
-      "מקצועיים, חדים ומוכווני תוצאות. Skyadvisers עלו על כל הציפיות בכל היבט של השירות.",
+      "מקצועיים, חדים ומוכווני תוצאות. Skyadvisors עלו על כל הציפיות בכל היבט של השירות.",
 
     // Blog
     "blog.title": "תובנות ומומחיות",

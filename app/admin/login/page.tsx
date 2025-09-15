@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
             <Lock className="h-6 w-6 text-secondary" />
           </div>
           <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
-          <p className="text-muted-foreground">Access the Skyadvisers admin panel</p>
+          <p className="text-muted-foreground">Access the Skyadvisors admin panel</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

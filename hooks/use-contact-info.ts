@@ -14,7 +14,7 @@ export function useContactInfo() {
     email: 'info@skyadvisers.com',
     phone: '+1 (555) 123-4567',
     address: '123 Business St, City, State 12345',
-    businessName: 'Skyadvisers'
+    businessName: 'Skyadvisors'
   })
   const [loading, setLoading] = useState(true)
 
@@ -37,7 +37,7 @@ export function useContactInfo() {
             email: data.email || 'info@skyadvisers.com',
             phone: data.phone || '+1 (555) 123-4567',
             address: data.address || '123 Business St, City, State 12345',
-            businessName: data.businessName || 'Skyadvisers',
+            businessName: data.businessName || 'Skyadvisors',
           })
         }
         setLoading(false)

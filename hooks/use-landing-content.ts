@@ -44,7 +44,7 @@ export function useLandingContent(locale: string) {
           return
         }
 
-        const docRef = doc(db, "site_content", `landing_${locale}`)
+        const docRef = doc(db, "site_content", "landing_shared")
         const docSnap = await getDoc(docRef)
 
         if (docSnap.exists()) {
@@ -57,7 +57,7 @@ export function useLandingContent(locale: string) {
         } else {
           // Set default content if no document exists
           const defaultContent: LandingContent = {
-            id: `landing_${locale}`,
+                id: "landing_shared",
             heroTitle: "",
             heroSubtitle: "",
             heroDescription: locale === 'he' ? "אנחנו מספקים הדרכה מומחית לעזור לעסק שלכם לגדול ולהצליח בשוק התחרותי של היום." : "We provide expert guidance to help your business grow and succeed in today's competitive market.",

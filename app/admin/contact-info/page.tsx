@@ -288,7 +288,7 @@ export default function SettingsPage() {
                         id="businessName"
                         value={settings.contactInfo.businessName || ""}
                         onChange={(e) => handleContactInfoChange("businessName", e.target.value)}
-                        placeholder="Skyadvisers"
+                        placeholder="Skyadvisors"
                         required
                       />
                     </div>

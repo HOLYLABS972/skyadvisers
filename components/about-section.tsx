@@ -36,7 +36,7 @@ export function AboutSection({ locale }: AboutSectionProps) {
       }
 
       setUploadingImage(true)
-      const result = await uploadImage(file, `about-images/${locale}`)
+      const result = await uploadImage(file, `about-images/shared`)
       
       await updateContent({
         aboutImageUrl: result.url,

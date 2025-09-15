@@ -27,10 +27,10 @@ Key trends we're observing:
 
 For founders seeking investment, it's crucial to understand these trends and position your startup accordingly. The key is demonstrating not just innovative technology, but sustainable business models that can scale effectively.
 
-At Skyadvisers, we help founders navigate this complex landscape, providing strategic guidance on positioning, valuation, and investor relations.`,
+At Skyadvisors, we help founders navigate this complex landscape, providing strategic guidance on positioning, valuation, and investor relations.`,
     status: "published",
     locale: "en",
-    author: "Skyadvisers Team",
+    author: "Skyadvisors Team",
   },
   {
     title: "מדריך להערכת סטארט-אפים: מה משקיעים באמת מחפשים",
@@ -58,7 +58,7 @@ At Skyadvisers, we help founders navigate this complex landscape, providing stra
 בסקיי-אדוויזרס, אנו מסייעים למייסדים להכין את הסטארט-אפ שלהם להערכה מקצועית ולהציג את הפוטנציאל שלהם בצורה הטובה ביותר.`,
     status: "published",
     locale: "he",
-    author: "צוות Skyadvisers",
+    author: "צוות Skyadvisors",
   },
   {
     title: "Building Strategic Partnerships: A CEO's Guide",
@@ -93,7 +93,7 @@ Regular communication, performance reviews, and adaptation to changing market co
 Remember: the best partnerships feel less like contracts and more like extensions of your own team.`,
     status: "draft",
     locale: "en",
-    author: "Skyadvisers Team",
+    author: "Skyadvisors Team",
   },
 ]
 

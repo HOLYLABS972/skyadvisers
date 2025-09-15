@@ -107,7 +107,7 @@ export default function AdminDashboard() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground">Welcome to the Skyadvisers admin panel</p>
+          <p className="text-muted-foreground">Welcome to the Skyadvisors admin panel</p>
         </div>
 
         {/* Stats Cards */}

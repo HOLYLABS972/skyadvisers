@@ -26,7 +26,7 @@ export function Footer({ locale }: FooterProps) {
             <ClientOnly 
               fallback={
                 <>
-                  <h3 className="text-2xl font-bold mb-4">Skyadvisers</h3>
+                  <h3 className="text-2xl font-bold mb-4">Skyadvisors</h3>
                   <p className="text-primary-foreground/80 mb-6 leading-relaxed max-w-md">{t("about.description")}</p>
                 </>
               }
@@ -112,7 +112,7 @@ export function Footer({ locale }: FooterProps) {
             <ClientOnly 
               fallback={
                 <div className="text-primary-foreground/60 text-sm">
-                  © {new Date().getFullYear()} Skyadvisers. {t("footer.allRightsReserved")}
+                  © {new Date().getFullYear()} Skyadvisors. {t("footer.allRightsReserved")}
                 </div>
               }
             >

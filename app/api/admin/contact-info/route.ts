@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
           email: "info@skyadvisers.com",
           phone: "+1 (555) 123-4567",
           address: "123 Business St, City, State 12345",
-          businessName: "Skyadvisers",
+          businessName: "Skyadvisors",
         },
         socialLinks: {
           facebook: "",

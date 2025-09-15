@@ -28,7 +28,7 @@ export function Header({ locale }: HeaderProps) {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href={`/${locale}`}>
-              <h1 className="text-2xl font-bold text-primary">Skyadvisers</h1>
+              <h1 className="text-2xl font-bold text-primary">Skyadvisors</h1>
             </Link>
           </div>
 

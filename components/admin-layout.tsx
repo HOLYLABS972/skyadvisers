@@ -101,7 +101,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="flex items-center justify-between h-16 px-6 border-b border-border">
-          <h1 className="text-xl font-bold text-foreground">Skyadvisers Admin</h1>
+          <h1 className="text-xl font-bold text-foreground">Skyadvisors Admin</h1>
           <Button variant="ghost" size="sm" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
             <X className="h-4 w-4" />
           </Button>

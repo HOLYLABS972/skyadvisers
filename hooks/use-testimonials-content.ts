@@ -54,7 +54,7 @@ export function useTestimonialsContent(locale: string) {
                 id: 'testimonial_1',
                 name: 'Sarah Chen',
                 title: locale === 'he' ? 'מנכ״לית, TechFlow' : 'CEO, TechFlow',
-                content: locale === 'he' ? 'Skyadvisers סייעו לנו לנווט את סבב גיוס ה‑Series A במקצועיות יוצאת דופן. ההכוונה האסטרטגית שלהם הייתה בלתי‑החלפה.' : 'Skyadvisers helped us navigate our Series A funding round with exceptional professionalism. Their strategic guidance was invaluable.',
+                content: locale === 'he' ? 'Skyadvisors סייעו לנו לנווט את סבב גיוס ה‑Series A במקצועיות יוצאת דופן. ההכוונה האסטרטגית שלהם הייתה בלתי‑החלפה.' : 'Skyadvisors helped us navigate our Series A funding round with exceptional professionalism. Their strategic guidance was invaluable.',
                 rating: 5
               },
               {
@@ -68,7 +68,7 @@ export function useTestimonialsContent(locale: string) {
                 id: 'testimonial_3',
                 name: 'Rachel Kim',
                 title: locale === 'he' ? 'מנכ״לית, DataVision' : 'CEO, DataVision',
-                content: locale === 'he' ? 'מקצועיים, חדים ומוכווני תוצאות. Skyadvisers עלו על כל הציפיות בכל היבט של השירות.' : 'Professional, sharp, and results-oriented. Skyadvisers exceeded all expectations in every aspect of their service.',
+                content: locale === 'he' ? 'מקצועיים, חדים ומוכווני תוצאות. Skyadvisors עלו על כל הציפיות בכל היבט של השירות.' : 'Professional, sharp, and results-oriented. Skyadvisors exceeded all expectations in every aspect of their service.',
                 rating: 5
               }
             ],

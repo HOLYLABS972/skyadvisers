@@ -138,7 +138,7 @@ export default function BlogPage({ params }: BlogPageProps) {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center text-white px-6">
                   <h2 className="text-2xl md:text-3xl font-bold mb-3">
-                    {heroContent.heroTitle || "Welcome to Skyadvisers"}
+                    {heroContent.heroTitle || "Welcome to Skyadvisors"}
                   </h2>
                   <p className="text-lg opacity-90 mb-4 max-w-2xl">
                     {heroContent.heroSubtitle || "Your trusted business advisory partner"}

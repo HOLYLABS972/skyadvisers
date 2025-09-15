@@ -39,7 +39,7 @@ export function ServicesSection({ locale }: ServicesSectionProps) {
       }
 
       setUploadingImages(prev => ({ ...prev, [serviceId]: true }))
-      const result = await uploadImage(file, `services-images/${locale}/${serviceId}`)
+      const result = await uploadImage(file, `services-images/shared/${serviceId}`)
       
       const updatedServices = content?.services?.map(service =>
         service.id === serviceId 

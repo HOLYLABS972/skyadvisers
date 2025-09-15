@@ -30,7 +30,7 @@ export function HeroSection({ locale }: HeroSectionProps) {
 
     setUploadingImage(true)
     try {
-      const { url, path } = await uploadImage(file, "hero-images")
+      const { url, path } = await uploadImage(file, "hero-images/shared")
       await updateContent({
         heroImageUrl: url,
         heroImagePath: path,

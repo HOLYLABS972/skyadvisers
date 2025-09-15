@@ -48,7 +48,7 @@ export function usePrivacyContent() {
         // Set default content if no document exists
         const defaultContent: PrivacyContent = {
           id: "privacy",
-          introduction: "At Skyadvisers, we are committed to protecting your privacy and personal information. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website.",
+          introduction: "At Skyadvisors, we are committed to protecting your privacy and personal information. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website.",
           informationWeCollect: "We collect personal information such as name, contact information, business information, and project details. We also automatically collect technical information including IP address, browser type, and pages visited.",
           howWeUseInfo: "We use the information we collect to provide and improve our advisory services, respond to inquiries, send relevant updates, analyze website usage, comply with legal obligations, and protect against fraud.",
           informationSharing: "We do not sell, trade, or rent your personal information to third parties. We may share your information only with your explicit consent, to comply with legal requirements, to protect our rights, or with trusted service providers.",

@@ -39,8 +39,8 @@ export function ContactDetailModal({ contact, onClose, onStatusUpdate }: Contact
   }
 
   const handleEmailReply = () => {
-    const subject = `Re: Your inquiry to Skyadvisers`
-    const body = `Dear ${contact.name},\n\nThank you for contacting Skyadvisers. We have received your message:\n\n"${contact.message}"\n\nWe will get back to you shortly with a detailed response.\n\nBest regards,\nSkyadvisers Team`
+    const subject = `Re: Your inquiry to Skyadvisors`
+    const body = `Dear ${contact.name},\n\nThank you for contacting Skyadvisors. We have received your message:\n\n"${contact.message}"\n\nWe will get back to you shortly with a detailed response.\n\nBest regards,\nSkyadvisors Team`
 
     window.open(`mailto:${contact.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`)
   }

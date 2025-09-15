@@ -5,7 +5,7 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Skyadvisers - Strategic Advisory for Visionary Leaders',
+  title: 'Skyadvisors - Strategic Advisory for Visionary Leaders',
   description: 'Empowering CEOs and founders with expert guidance on investment, startup evaluation, and business strategy.',
   generator: 'Next.js',
 }
