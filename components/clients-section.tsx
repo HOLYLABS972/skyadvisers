@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { useLandingContent } from "@/hooks/use-landing-content"
+import { useClientsContent } from "@/hooks/use-clients-content"
 import { useAuth } from "@/hooks/use-auth"
 import { getTranslation, type Locale } from "@/lib/i18n"
 import { Button } from "@/components/ui/button"
@@ -18,10 +18,11 @@ interface Client {
   id: string
   name: string
   logoUrl: string
+  link: string
 }
 
 export function ClientsSection({ locale }: ClientsSectionProps) {
-  const { content, updateContent } = useLandingContent(locale)
+  const { content, updateContent } = useClientsContent()
   const { isLoggedIn } = useAuth()
   const t = (key: string) => getTranslation(key, locale as Locale)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -29,14 +30,13 @@ export function ClientsSection({ locale }: ClientsSectionProps) {
   const [editingClient, setEditingClient] = useState<string | null>(null)
   const [clientName, setClientName] = useState("")
 
-  const addClient = () => {
+  const addClient = async (clientData: Omit<Client, 'id'>) => {
     const newClient = {
       id: Date.now().toString(),
-      name: "New Client",
-      logoUrl: "",
+      ...clientData,
     }
     const updatedClients = [...(content?.clients || []), newClient]
-    updateContent({ clients: updatedClients })
+    await updateContent({ clients: updatedClients })
   }
 
   const removeClient = (clientId: string) => {
@@ -81,10 +81,12 @@ export function ClientsSection({ locale }: ClientsSectionProps) {
             {t("clients.title")}
           </h2>
           {isLoggedIn && (
-            <Button onClick={addClient} className="mt-4">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Client
-            </Button>
+            <ClientModal onSave={addClient} trigger={
+              <Button className="mt-4">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Client
+              </Button>
+            } />
           )}
         </div>
 
@@ -95,11 +97,26 @@ export function ClientsSection({ locale }: ClientsSectionProps) {
               <div key={client.id} className="flex flex-col items-center justify-center relative group">
                 <div className="h-16 w-full flex items-center justify-center mb-2">
                   {client.logoUrl ? (
-                    <img
-                      src={client.logoUrl}
-                      alt={client.name}
-                      className="max-h-12 max-w-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
-                    />
+                    client.link ? (
+                      <a 
+                        href={client.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="block"
+                      >
+                        <img
+                          src={client.logoUrl}
+                          alt={client.name}
+                          className="max-h-12 max-w-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer"
+                        />
+                      </a>
+                    ) : (
+                      <img
+                        src={client.logoUrl}
+                        alt={client.name}
+                        className="max-h-12 max-w-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
+                      />
+                    )
                   ) : (
                     <div className="h-12 w-full bg-muted rounded flex items-center justify-center">
                       <span className="text-muted-foreground text-xs">No Logo</span>

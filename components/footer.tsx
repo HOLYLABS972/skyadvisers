@@ -123,12 +123,6 @@ export function Footer({ locale }: FooterProps) {
               <a href={`/${activeLocale}/privacy-policy`} className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">
                 {t("footer.privacyPolicy")}
               </a>
-              <a href={`/${activeLocale}/terms-of-service`} className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">
-                {t("footer.termsOfService")}
-              </a>
-              <a href={`/${activeLocale}/cookie-policy`} className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">
-                {t("footer.cookiePolicy")}
-              </a>
             </div>
           </div>
         </div>

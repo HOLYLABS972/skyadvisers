@@ -34,10 +34,10 @@ export function Header({ locale }: HeaderProps) {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href={linkTo("services")} className="text-foreground hover:text-primary transition-colors">
+            <Link href={`/${locale}/services`} className="text-foreground hover:text-primary transition-colors">
 {t("nav.services")}
             </Link>
-            <Link href={linkTo("testimonials")} className="text-foreground hover:text-primary transition-colors">
+            <Link href={`/${locale}/testimonials`} className="text-foreground hover:text-primary transition-colors">
 {t("nav.testimonials")}
             </Link>
             <Link href={`/${locale}/blog`} className="text-foreground hover:text-primary transition-colors">
@@ -66,14 +66,14 @@ export function Header({ locale }: HeaderProps) {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-border">
               <Link
-                href={linkTo("services")}
+                href={`/${locale}/services`}
                 className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
 {t("nav.services")}
               </Link>
               <Link
-                href={linkTo("testimonials")}
+                href={`/${locale}/testimonials`}
                 className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >

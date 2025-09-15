@@ -12,8 +12,8 @@ import { useToast } from "@/hooks/use-toast"
 interface Client {
   id: string
   name: string
-  description: string
   logoUrl: string
+  link: string
 }
 
 interface ClientModalProps {
@@ -24,9 +24,9 @@ interface ClientModalProps {
 export function ClientModal({ onSave, trigger }: ClientModalProps) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState("")
-  const [description, setDescription] = useState("")
   const [logoUrl, setLogoUrl] = useState("")
   const [logoPreview, setLogoPreview] = useState("")
+  const [link, setLink] = useState("")
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -84,15 +84,15 @@ export function ClientModal({ onSave, trigger }: ClientModalProps) {
     try {
       await onSave({
         name: name.trim(),
-        description: description.trim(),
         logoUrl,
+        link: link.trim(),
       })
       
       // Reset form
       setName("")
-      setDescription("")
       setLogoUrl("")
       setLogoPreview("")
+      setLink("")
       setOpen(false)
       
       toast({
@@ -113,9 +113,9 @@ export function ClientModal({ onSave, trigger }: ClientModalProps) {
 
   const handleCancel = () => {
     setName("")
-    setDescription("")
     setLogoUrl("")
     setLogoPreview("")
+    setLink("")
     setOpen(false)
   }
 
@@ -143,16 +143,17 @@ export function ClientModal({ onSave, trigger }: ClientModalProps) {
             />
           </div>
 
-          {/* Client Description */}
+          {/* Client Link */}
           <div>
             <label className="text-sm font-medium text-foreground mb-2 block">
-              Description
+              Website Link
             </label>
-            <Textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter client description (optional)"
-              className="w-full min-h-[80px] resize-none"
+            <Input
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+              placeholder="https://example.com (optional)"
+              className="w-full"
+              type="url"
             />
           </div>
 
