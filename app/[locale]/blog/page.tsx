@@ -5,8 +5,10 @@ import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { useLocale } from "@/hooks/use-locale"
-import { Search, Calendar, ArrowRight, FileText } from "lucide-react"
+import { useLandingContent } from "@/hooks/use-landing-content"
+import { Search, Calendar, ArrowRight, FileText, Home } from "lucide-react"
 import { db } from "@/lib/firebase"
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore"
 
@@ -23,6 +25,7 @@ interface BlogPost {
 
 export default function BlogPage() {
   const { locale } = useLocale()
+  const { content: heroContent } = useLandingContent()
   
   // Hardcoded translations for testing
   const translations = {
@@ -63,12 +66,20 @@ export default function BlogPage() {
       )
       const snapshot = await getDocs(postsQuery)
       
-      const postsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || doc.data().createdAt,
-        updatedAt: doc.data().updatedAt?.toDate?.()?.toISOString() || doc.data().updatedAt,
-      }))
+      const postsData = snapshot.docs.map((doc) => {
+        const data = doc.data()
+        return {
+          id: doc.id,
+          title: data.title,
+          slug: data.slug,
+          excerpt: data.excerpt,
+          status: data.status as "published",
+          author: data.author,
+          locale: data.locale as "en" | "he",
+          createdAt: data.createdAt?.toDate?.()?.toISOString() || data.createdAt,
+          updatedAt: data.updatedAt?.toDate?.()?.toISOString() || data.updatedAt,
+        } as BlogPost
+      })
       
       setPosts(postsData)
     } catch (error) {
@@ -102,7 +113,45 @@ export default function BlogPage() {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Hero Section */}
+        {/* Hero Preview Section */}
+        {heroContent && (
+          <Card className="mb-12 overflow-hidden">
+            <div 
+              className="relative h-48 md:h-64"
+              style={{
+                backgroundImage: heroContent.heroImageUrl 
+                  ? `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${heroContent.heroImageUrl})`
+                  : undefined,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }}
+            >
+              {!heroContent.heroImageUrl && (
+                <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 to-secondary/10" />
+              )}
+              
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center text-white px-6">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                    {heroContent.heroTitle || "Welcome to Skyadvisers"}
+                  </h2>
+                  <p className="text-lg opacity-90 mb-4 max-w-2xl">
+                    {heroContent.heroSubtitle || "Your trusted business advisory partner"}
+                  </p>
+                  <Button asChild className="bg-white text-black hover:bg-white/90">
+                    <Link href="/">
+                      <Home className="mr-2 h-4 w-4" />
+                      Visit Homepage
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Blog Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 text-balance">
             {t("blog.title") || "Insights & Expertise"}

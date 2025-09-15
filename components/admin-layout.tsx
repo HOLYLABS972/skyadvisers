@@ -7,7 +7,7 @@ import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
-import { LayoutDashboard, FileText, MessageSquare, LogOut, Menu, X, Settings } from "lucide-react"
+import { LayoutDashboard, FileText, MessageSquare, LogOut, Menu, X, Settings, Home, Shield } from "lucide-react"
 import { signOutAdmin } from "@/lib/firebase-auth"
 import { onAuthStateChanged, type User } from "firebase/auth"
 import { auth } from "@/lib/firebase"
@@ -69,6 +69,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
   const navigation = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+    { name: "Landing Page", href: "/admin/landing", icon: Home },
+    { name: "Privacy Policy", href: "/admin/privacy", icon: Shield },
     { name: "Blog Posts", href: "/admin/blog", icon: FileText },
     { name: "Contact Forms", href: "/admin/contacts", icon: MessageSquare },
     { name: "Settings", href: "/admin/contact-info", icon: Settings },

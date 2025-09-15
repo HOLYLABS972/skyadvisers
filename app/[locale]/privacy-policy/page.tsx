@@ -4,9 +4,11 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useContactInfo } from "@/hooks/use-contact-info"
+import { usePrivacyContent } from "@/hooks/use-privacy-content"
 
 export default function PrivacyPolicyPage() {
   const { contactInfo } = useContactInfo()
+  const { content: privacyContent, loading } = usePrivacyContent()
 
   return (
     <div className="min-h-screen bg-background">
@@ -23,8 +25,7 @@ export default function PrivacyPolicyPage() {
               </CardHeader>
               <CardContent className="prose prose-gray max-w-none">
                 <p>
-                  At {contactInfo.businessName}, we are committed to protecting your privacy and personal information. 
-                  This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website.
+                  {privacyContent?.introduction || `At ${contactInfo.businessName}, we are committed to protecting your privacy and personal information. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website.`}
                 </p>
               </CardContent>
             </Card>
@@ -34,21 +35,9 @@ export default function PrivacyPolicyPage() {
                 <CardTitle>Information We Collect</CardTitle>
               </CardHeader>
               <CardContent className="prose prose-gray max-w-none">
-                <h4 className="font-semibold mb-2">Personal Information</h4>
-                <ul className="list-disc pl-6 space-y-2 mb-4">
-                  <li>Name and contact information (email, phone number)</li>
-                  <li>Business information and project details</li>
-                  <li>Communication preferences</li>
-                  <li>Any other information you voluntarily provide</li>
-                </ul>
-                
-                <h4 className="font-semibold mb-2">Automatically Collected Information</h4>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>IP address and device information</li>
-                  <li>Browser type and version</li>
-                  <li>Pages visited and time spent on our site</li>
-                  <li>Referring website information</li>
-                </ul>
+                <p>
+                  {privacyContent?.informationWeCollect || `We collect personal information such as name, contact information, business information, and project details. We also automatically collect technical information including IP address, browser type, and pages visited.`}
+                </p>
               </CardContent>
             </Card>
 
@@ -57,15 +46,9 @@ export default function PrivacyPolicyPage() {
                 <CardTitle>How We Use Your Information</CardTitle>
               </CardHeader>
               <CardContent className="prose prose-gray max-w-none">
-                <p>We use the information we collect to:</p>
-                <ul className="list-disc pl-6 space-y-2 mt-4">
-                  <li>Provide and improve our advisory services</li>
-                  <li>Respond to your inquiries and requests</li>
-                  <li>Send you relevant business updates and newsletters</li>
-                  <li>Analyze website usage to enhance user experience</li>
-                  <li>Comply with legal obligations</li>
-                  <li>Protect against fraud and security threats</li>
-                </ul>
+                <p>
+                  {privacyContent?.howWeUseInfo || `We use the information we collect to provide and improve our advisory services, respond to inquiries, send relevant updates, analyze website usage, comply with legal obligations, and protect against fraud.`}
+                </p>
               </CardContent>
             </Card>
 
@@ -74,14 +57,9 @@ export default function PrivacyPolicyPage() {
                 <CardTitle>Information Sharing</CardTitle>
               </CardHeader>
               <CardContent className="prose prose-gray max-w-none">
-                <p>We do not sell, trade, or rent your personal information to third parties. We may share your information only in the following circumstances:</p>
-                <ul className="list-disc pl-6 space-y-2 mt-4">
-                  <li>With your explicit consent</li>
-                  <li>To comply with legal requirements</li>
-                  <li>To protect our rights and prevent fraud</li>
-                  <li>With trusted service providers who assist in our operations</li>
-                  <li>In connection with a business transfer or merger</li>
-                </ul>
+                <p>
+                  {privacyContent?.informationSharing || `We do not sell, trade, or rent your personal information to third parties. We may share your information only with your explicit consent, to comply with legal requirements, to protect our rights, or with trusted service providers.`}
+                </p>
               </CardContent>
             </Card>
 
@@ -91,15 +69,8 @@ export default function PrivacyPolicyPage() {
               </CardHeader>
               <CardContent className="prose prose-gray max-w-none">
                 <p>
-                  We implement appropriate security measures to protect your personal information against unauthorized access, 
-                  alteration, disclosure, or destruction. This includes:
+                  {privacyContent?.dataSecurity || `We implement appropriate security measures including encryption of sensitive data, secure servers and databases, regular security audits, and limited access to personal information.`}
                 </p>
-                <ul className="list-disc pl-6 space-y-2 mt-4">
-                  <li>Encryption of sensitive data</li>
-                  <li>Secure servers and databases</li>
-                  <li>Regular security audits and updates</li>
-                  <li>Limited access to personal information</li>
-                </ul>
               </CardContent>
             </Card>
 
@@ -108,15 +79,9 @@ export default function PrivacyPolicyPage() {
                 <CardTitle>Your Rights</CardTitle>
               </CardHeader>
               <CardContent className="prose prose-gray max-w-none">
-                <p>You have the right to:</p>
-                <ul className="list-disc pl-6 space-y-2 mt-4">
-                  <li>Access and review your personal information</li>
-                  <li>Request corrections to inaccurate data</li>
-                  <li>Request deletion of your personal information</li>
-                  <li>Opt-out of marketing communications</li>
-                  <li>Data portability (receive a copy of your data)</li>
-                  <li>Object to certain processing activities</li>
-                </ul>
+                <p>
+                  {privacyContent?.yourRights || `You have the right to access and review your personal information, request corrections to inaccurate data, request deletion of your personal information, opt-out of marketing communications, and receive a copy of your data.`}
+                </p>
               </CardContent>
             </Card>
 
@@ -126,8 +91,7 @@ export default function PrivacyPolicyPage() {
               </CardHeader>
               <CardContent className="prose prose-gray max-w-none">
                 <p>
-                  We use cookies and similar tracking technologies to enhance your browsing experience. 
-                  For more detailed information, please see our <a href="/cookie-policy" className="text-primary hover:underline">Cookie Policy</a>.
+                  {privacyContent?.cookiesTracking || `We use cookies and similar tracking technologies to enhance your browsing experience. These technologies help us understand how you interact with our website and improve our services. You can control cookies through your browser settings.`}
                 </p>
               </CardContent>
             </Card>
@@ -138,9 +102,7 @@ export default function PrivacyPolicyPage() {
               </CardHeader>
               <CardContent className="prose prose-gray max-w-none">
                 <p>
-                  Our website may contain links to third-party websites or integrate with third-party services. 
-                  We are not responsible for the privacy practices of these external sites. 
-                  We encourage you to review their privacy policies before providing any personal information.
+                  {privacyContent?.thirdPartyServices || `Our website may contain links to third-party websites or integrate with third-party services. We are not responsible for the privacy practices of these external sites.`}
                 </p>
               </CardContent>
             </Card>
@@ -151,8 +113,7 @@ export default function PrivacyPolicyPage() {
               </CardHeader>
               <CardContent className="prose prose-gray max-w-none">
                 <p>
-                  We may update this Privacy Policy from time to time. We will notify you of any significant changes 
-                  by posting the new policy on this page and updating the "Last updated" date.
+                  {privacyContent?.changesToPolicy || `We may update this Privacy Policy from time to time. We will notify you of any significant changes by posting the new policy on this page and updating the "Last updated" date.`}
                 </p>
               </CardContent>
             </Card>
