@@ -7,7 +7,7 @@ import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
-import { LayoutDashboard, FileText, MessageSquare, LogOut, Menu, X, Settings } from "lucide-react"
+import { LayoutDashboard, FileText, MessageSquare, LogOut, Menu, X, Settings, ExternalLink } from "lucide-react"
 import { signOutAdmin } from "@/lib/firebase-auth"
 import { onAuthStateChanged, type User } from "firebase/auth"
 import { auth } from "@/lib/firebase"
@@ -72,6 +72,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     { name: "Blog Posts", href: "/admin/blog", icon: FileText },
     { name: "Contact Forms", href: "/admin/contacts", icon: MessageSquare },
     { name: "Settings", href: "/admin/contact-info", icon: Settings },
+    { name: "Edit Website", href: "/", icon: ExternalLink, external: true },
+    { name: "Sign Out", href: "#", icon: LogOut, action: "logout" },
   ]
 
   if (loading) {
@@ -111,6 +113,45 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           <div className="space-y-1">
             {navigation.map((item) => {
               const isActive = pathname === item.href
+              const isExternal = (item as any).external
+              const isAction = (item as any).action
+              
+              if (isExternal) {
+                return (
+                  <button
+                    key={item.name}
+                    onClick={() => {
+                      window.open(item.href, "_blank")
+                      setSidebarOpen(false)
+                    }}
+                    className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors w-full text-left ${
+                      "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    }`}
+                  >
+                    <item.icon className="mr-3 h-4 w-4" />
+                    {item.name}
+                  </button>
+                )
+              }
+              
+              if (isAction === "logout") {
+                return (
+                  <button
+                    key={item.name}
+                    onClick={() => {
+                      handleLogout()
+                      setSidebarOpen(false)
+                    }}
+                    className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors w-full text-left ${
+                      "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    }`}
+                  >
+                    <item.icon className="mr-3 h-4 w-4" />
+                    {item.name}
+                  </button>
+                )
+              }
+              
               return (
                 <Link
                   key={item.name}
@@ -130,12 +171,6 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </div>
         </nav>
 
-        <div className="absolute bottom-6 left-3 right-3">
-          <Button variant="outline" className="w-full justify-start bg-transparent" onClick={handleLogout}>
-            <LogOut className="mr-3 h-4 w-4" />
-            Sign Out
-          </Button>
-        </div>
       </div>
 
       {/* Main content */}
