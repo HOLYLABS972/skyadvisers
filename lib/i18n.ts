@@ -124,7 +124,7 @@ export const translations = {
     "hero.subtitle": "מעצימים מנכ״לים ומייסדים עם הדרכה מומחית בהשקעות, הערכת סטארט-אפים ואסטרטגיה עסקית.",
     "hero.cta": "התחל עכשיו",
     "hero.badge": "ייעוץ עסקי אסטרטגי",
-      "hero.welcome.title": "ברוכים הבאים ל-Skyadvisors",
+      "hero.welcome.title": " Skyadvisors ברוכים הבאים",
     "hero.welcome.subtitle": "שותף הייעוץ העסקי המהימן שלכם",
     "hero.stats.startups": "סטארטאפים שליווינו",
     "hero.stats.funding": "מימון שגויס",
