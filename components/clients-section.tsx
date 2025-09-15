@@ -7,7 +7,8 @@ import { getTranslation, type Locale } from "@/lib/i18n"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { uploadImage, deleteImage, validateImageFile } from "@/lib/image-upload"
-import { Plus, Trash2, Upload, X } from "lucide-react"
+import { ClientModal } from "@/components/client-modal"
+import { Plus, Trash2, Upload, X, Edit2 } from "lucide-react"
 
 interface ClientsSectionProps {
   locale: string
@@ -20,7 +21,7 @@ interface Client {
 }
 
 export function ClientsSection({ locale }: ClientsSectionProps) {
-  const { content, updateContent } = useLandingContent()
+  const { content, updateContent } = useLandingContent(locale)
   const { isLoggedIn } = useAuth()
   const t = (key: string) => getTranslation(key, locale as Locale)
   const fileInputRef = useRef<HTMLInputElement>(null)

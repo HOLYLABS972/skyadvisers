@@ -37,9 +37,6 @@ export function Header({ locale }: HeaderProps) {
             <Link href={linkTo("services")} className="text-foreground hover:text-primary transition-colors">
 {t("nav.services")}
             </Link>
-            <Link href={linkTo("about")} className="text-foreground hover:text-primary transition-colors">
-{t("nav.about")}
-            </Link>
             <Link href={linkTo("testimonials")} className="text-foreground hover:text-primary transition-colors">
 {t("nav.testimonials")}
             </Link>
@@ -73,35 +70,28 @@ export function Header({ locale }: HeaderProps) {
                 className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-  {t("nav.services")}
-              </Link>
-              <Link
-                href={linkTo("about")}
-                className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-  {t("nav.about")}
+{t("nav.services")}
               </Link>
               <Link
                 href={linkTo("testimonials")}
                 className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-  {t("nav.testimonials")}
+{t("nav.testimonials")}
               </Link>
               <Link
                 href={`/${locale}/blog`}
                 className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-  {t("nav.blog")}
+{t("nav.blog")}
               </Link>
               <Link
                 href={linkTo("contact")}
                 className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-  {t("nav.contact")}
+{t("nav.contact")}
               </Link>
             </div>
           </div>

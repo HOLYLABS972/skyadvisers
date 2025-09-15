@@ -15,7 +15,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ locale }: HeroSectionProps) {
   const t = (key: string) => getTranslation(key, locale as Locale)
-  const { content, updateContent } = useLandingContent()
+  const { content, updateContent } = useLandingContent(locale)
   const { isLoggedIn } = useAuth()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [uploadingImage, setUploadingImage] = useState(false)
