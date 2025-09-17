@@ -14,8 +14,8 @@ export default function HomePage({ params }: HomePageProps) {
     <>
       <HeroSection locale={params.locale} />
       <AboutSection locale={params.locale} />
-      <ClientsSection locale={params.locale} />
       <ServicesSection locale={params.locale} />
+      <ClientsSection locale={params.locale} />
       <TestimonialsSection locale={params.locale} />
       <ContactSection locale={params.locale} />
     </>

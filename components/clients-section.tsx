@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { uploadImage, deleteImage, validateImageFile } from "@/lib/image-upload"
 import { ClientModal } from "@/components/client-modal"
-import { Plus, Trash2, Upload, X, Edit2 } from "lucide-react"
+import { Plus, Trash2, Upload, X, Edit2, GripVertical } from "lucide-react"
 
 interface ClientsSectionProps {
   locale: string
@@ -29,6 +29,8 @@ export function ClientsSection({ locale }: ClientsSectionProps) {
   const [uploadingLogo, setUploadingLogo] = useState<string | null>(null)
   const [editingClient, setEditingClient] = useState<string | null>(null)
   const [clientName, setClientName] = useState("")
+  const [draggedClient, setDraggedClient] = useState<string | null>(null)
+  const [dragOverClient, setDragOverClient] = useState<string | null>(null)
 
   const addClient = async (clientData: Omit<Client, 'id'>) => {
     const newClient = {
@@ -73,6 +75,49 @@ export function ClientsSection({ locale }: ClientsSectionProps) {
     }
   }
 
+  const handleDragStart = (e: React.DragEvent, clientId: string) => {
+    setDraggedClient(clientId)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e: React.DragEvent, clientId: string) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    setDragOverClient(clientId)
+  }
+
+  const handleDragLeave = () => {
+    setDragOverClient(null)
+  }
+
+  const handleDrop = async (e: React.DragEvent, targetClientId: string) => {
+    e.preventDefault()
+    
+    if (!draggedClient || draggedClient === targetClientId) {
+      setDraggedClient(null)
+      setDragOverClient(null)
+      return
+    }
+
+    const clients = content?.clients || []
+    const draggedIndex = clients.findIndex(c => c.id === draggedClient)
+    const targetIndex = clients.findIndex(c => c.id === targetClientId)
+
+    if (draggedIndex === -1 || targetIndex === -1) {
+      setDraggedClient(null)
+      setDragOverClient(null)
+      return
+    }
+
+    const newClients = [...clients]
+    const [draggedClientData] = newClients.splice(draggedIndex, 1)
+    newClients.splice(targetIndex, 0, draggedClientData)
+
+    await updateContent({ clients: newClients })
+    setDraggedClient(null)
+    setDragOverClient(null)
+  }
+
   return (
     <section id="clients" className="py-20 bg-muted/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -86,7 +131,19 @@ export function ClientsSection({ locale }: ClientsSectionProps) {
         {content?.clients && content.clients.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
             {content.clients.map((client: Client) => (
-              <div key={client.id} className="flex flex-col items-center justify-center relative group">
+              <div 
+                key={client.id} 
+                draggable={isLoggedIn}
+                onDragStart={(e) => handleDragStart(e, client.id)}
+                onDragOver={(e) => handleDragOver(e, client.id)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, client.id)}
+                className={`flex flex-col items-center justify-center relative group ${
+                  draggedClient === client.id ? 'opacity-50' : ''
+                } ${
+                  dragOverClient === client.id ? 'ring-2 ring-secondary/20' : ''
+                } ${isLoggedIn ? 'cursor-move' : ''}`}
+              >
                 <div className="h-16 w-full flex items-center justify-center mb-2">
                   {client.logoUrl ? (
                     client.link ? (
@@ -152,6 +209,15 @@ export function ClientsSection({ locale }: ClientsSectionProps) {
                   </div>
                 ) : (
                   <span className="text-sm text-muted-foreground text-center">{client.name}</span>
+                )}
+
+                {/* Drag Handle */}
+                {isLoggedIn && (
+                  <div className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="bg-white/90 text-black hover:bg-white p-1 rounded cursor-move">
+                      <GripVertical className="h-3 w-3" />
+                    </div>
+                  </div>
                 )}
 
                 {/* Admin Controls */}

@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/use-auth"
 import { useServicesContent } from "@/hooks/use-services-content"
 import { InlineEditor } from "@/components/inline-editor"
 import { uploadImage, deleteImage, validateImageFile } from "@/lib/image-upload"
-import { TrendingUp, Target, Lightbulb, Upload, X, ImageIcon } from "lucide-react"
+import { TrendingUp, Target, Lightbulb, Upload, X, ImageIcon, Plus, Trash2, GripVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRef, useState } from "react"
 
@@ -20,6 +20,8 @@ export function ServicesSection({ locale }: ServicesSectionProps) {
   const { content, updateContent } = useServicesContent(locale)
   const fileInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({})
   const [uploadingImages, setUploadingImages] = useState<{ [key: string]: boolean }>({})
+  const [draggedItem, setDraggedItem] = useState<string | null>(null)
+  const [dragOverItem, setDragOverItem] = useState<string | null>(null)
 
   const iconMap = {
     investment: TrendingUp,
@@ -78,6 +80,80 @@ export function ServicesSection({ locale }: ServicesSectionProps) {
     }
   }
 
+  const addService = async () => {
+    const newService = {
+      id: `service_${Date.now()}`,
+      title: locale === 'he' ? 'שירות חדש' : 'New Service',
+      description: locale === 'he' ? 'תיאור השירות החדש' : 'Description of the new service',
+      imageUrl: '',
+      imagePath: ''
+    }
+    
+    const updatedServices = [...(content?.services || []), newService]
+    await updateContent({ services: updatedServices })
+  }
+
+  const removeService = async (serviceId: string) => {
+    if (!confirm(locale === 'he' ? 'האם אתה בטוח שברצונך למחוק שירות זה?' : 'Are you sure you want to delete this service?')) {
+      return
+    }
+
+    const service = content?.services?.find(s => s.id === serviceId)
+    if (service?.imagePath) {
+      try {
+        await deleteImage(service.imagePath)
+      } catch (error) {
+        console.error("Failed to delete service image:", error)
+      }
+    }
+
+    const updatedServices = content?.services?.filter(s => s.id !== serviceId) || []
+    await updateContent({ services: updatedServices })
+  }
+
+  const handleDragStart = (e: React.DragEvent, serviceId: string) => {
+    setDraggedItem(serviceId)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e: React.DragEvent, serviceId: string) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    setDragOverItem(serviceId)
+  }
+
+  const handleDragLeave = () => {
+    setDragOverItem(null)
+  }
+
+  const handleDrop = async (e: React.DragEvent, targetServiceId: string) => {
+    e.preventDefault()
+    
+    if (!draggedItem || draggedItem === targetServiceId) {
+      setDraggedItem(null)
+      setDragOverItem(null)
+      return
+    }
+
+    const services = content?.services || []
+    const draggedIndex = services.findIndex(s => s.id === draggedItem)
+    const targetIndex = services.findIndex(s => s.id === targetServiceId)
+
+    if (draggedIndex === -1 || targetIndex === -1) {
+      setDraggedItem(null)
+      setDragOverItem(null)
+      return
+    }
+
+    const newServices = [...services]
+    const [draggedService] = newServices.splice(draggedIndex, 1)
+    newServices.splice(targetIndex, 0, draggedService)
+
+    await updateContent({ services: newServices })
+    setDraggedItem(null)
+    setDragOverItem(null)
+  }
+
   return (
     <section id="services" className="py-20 bg-muted/20 relative overflow-hidden min-h-screen flex items-center">
       {/* Background gradient */}
@@ -125,14 +201,51 @@ export function ServicesSection({ locale }: ServicesSectionProps) {
 
           {/* Right side - Services grid */}
           <div className="lg:pl-8">
+            {isLoggedIn && (
+              <div className="mb-6">
+                <Button
+                  onClick={addService}
+                  className="bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  {locale === 'he' ? 'הוסף שירות' : 'Add Service'}
+                </Button>
+              </div>
+            )}
             <div className="grid gap-6">
               {content?.services?.map((service, index) => {
                 const Icon = iconMap[service.id as keyof typeof iconMap] || TrendingUp
                 return (
                   <div
                     key={service.id}
-                    className="group hover:shadow-lg transition-all duration-300 border border-border hover:border-secondary/50 rounded-lg p-6 bg-background/80 backdrop-blur-sm relative"
+                    draggable={isLoggedIn}
+                    onDragStart={(e) => handleDragStart(e, service.id)}
+                    onDragOver={(e) => handleDragOver(e, service.id)}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, service.id)}
+                    className={`group hover:shadow-lg transition-all duration-300 border border-border hover:border-secondary/50 rounded-lg p-6 bg-background/80 backdrop-blur-sm relative ${
+                      draggedItem === service.id ? 'opacity-50' : ''
+                    } ${
+                      dragOverItem === service.id ? 'border-secondary ring-2 ring-secondary/20' : ''
+                    } ${isLoggedIn ? 'cursor-move' : ''}`}
                   >
+                    {/* Drag handle and remove button */}
+                    {isLoggedIn && (
+                      <div className="absolute top-2 left-2 z-20 flex gap-1">
+                        <div className="bg-white/90 text-black hover:bg-white p-1 rounded cursor-move">
+                          <GripVertical className="h-3 w-3" />
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => removeService(service.id)}
+                          className="bg-red-500/90 text-white hover:bg-red-600 h-6 w-6 p-0"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    )}
+
                     <div className="flex items-center gap-6">
                       <div className="relative w-20 h-20 flex-shrink-0">
                     {service.imageUrl ? (
