@@ -98,7 +98,10 @@ export function RichTextEditor({
   }
 
   const insertText = (text: string) => {
-    if (!textareaRef.current) return
+    if (!textareaRef.current) {
+      console.log('No textarea ref')
+      return
+    }
     
     const textarea = textareaRef.current
     const start = textarea.selectionStart
@@ -106,13 +109,18 @@ export function RichTextEditor({
     const before = editValue.substring(0, start)
     const after = editValue.substring(end)
     
-    setEditValue(before + text + after)
+    const newValue = before + text + after
+    console.log('Inserting text:', text, 'at position:', start, 'new value:', newValue)
+    setEditValue(newValue)
     
-    // Restore cursor position
-    setTimeout(() => {
-      textarea.focus()
-      textarea.setSelectionRange(start + text.length, start + text.length)
-    }, 0)
+    // Use requestAnimationFrame for better timing
+    requestAnimationFrame(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus()
+        const newCursorPos = start + text.length
+        textareaRef.current.setSelectionRange(newCursorPos, newCursorPos)
+      }
+    })
   }
 
   const wrapText = (prefix: string, suffix: string = prefix) => {
@@ -128,13 +136,18 @@ export function RichTextEditor({
       const before = editValue.substring(0, start)
       const after = editValue.substring(end)
       
-      setEditValue(before + wrappedText + after)
+      const newValue = before + wrappedText + after
+      setEditValue(newValue)
       
-      // Restore selection
-      setTimeout(() => {
-        textarea.focus()
-        textarea.setSelectionRange(start + prefix.length, start + prefix.length + selectedText.length)
-      }, 0)
+      // Restore selection with requestAnimationFrame
+      requestAnimationFrame(() => {
+        if (textareaRef.current) {
+          textareaRef.current.focus()
+          const newStart = start + prefix.length
+          const newEnd = newStart + selectedText.length
+          textareaRef.current.setSelectionRange(newStart, newEnd)
+        }
+      })
     } else {
       insertText(prefix + suffix)
     }
@@ -273,8 +286,9 @@ export function RichTextEditor({
                     key={index}
                     size="sm"
                     variant="ghost"
-                    className="h-8 w-8 p-0 text-lg"
+                    className="h-8 w-8 p-0 text-lg hover:bg-muted"
                     onClick={() => {
+                      console.log('Inserting emoji:', emoji)
                       insertText(emoji)
                       setShowEmojiPicker(false)
                     }}
