@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Edit2, Check, X } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { RichTextEditor } from "./rich-text-editor"
 
 interface InlineEditorProps {
   value: string
@@ -24,6 +25,20 @@ export function InlineEditor({
   className = "",
   multiline = false 
 }: InlineEditorProps) {
+  // Use RichTextEditor for multiline content
+  if (type === "textarea" || multiline) {
+    return (
+      <RichTextEditor
+        value={value}
+        onSave={onSave}
+        placeholder={placeholder}
+        className={className}
+        multiline={multiline}
+      />
+    )
+  }
+
+  // Keep simple input editor for single-line content
   const [isEditing, setIsEditing] = useState(false)
   const [editValue, setEditValue] = useState(value)
   const [saving, setSaving] = useState(false)
@@ -68,22 +83,12 @@ export function InlineEditor({
   if (isEditing) {
     return (
       <div className={`relative group ${className}`}>
-        {type === "textarea" || multiline ? (
-          <Textarea
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            placeholder={placeholder}
-            className="min-h-[100px] resize-none"
-            autoFocus
-          />
-        ) : (
-          <Input
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            placeholder={placeholder}
-            autoFocus
-          />
-        )}
+        <Input
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          placeholder={placeholder}
+          autoFocus
+        />
         <div className="flex gap-2 mt-2">
           <Button
             size="sm"
