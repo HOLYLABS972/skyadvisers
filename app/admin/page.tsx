@@ -237,12 +237,23 @@ export default function AdminDashboard() {
               </a>
 
               <a
-                href="/admin/contact-info"
+                href="/admin/settings"
                 className="flex items-center p-4 border border-border rounded-lg hover:bg-muted transition-colors"
               >
                 <Settings className="h-8 w-8 text-secondary mr-4" />
                 <div>
-                  <h3 className="font-medium">Manage Settings</h3>
+                  <h3 className="font-medium">Page Settings</h3>
+                  <p className="text-sm text-muted-foreground">Manage page sections and layout</p>
+                </div>
+              </a>
+
+              <a
+                href="/admin/contact-info"
+                className="flex items-center p-4 border border-border rounded-lg hover:bg-muted transition-colors"
+              >
+                <MessageSquare className="h-8 w-8 text-secondary mr-4" />
+                <div>
+                  <h3 className="font-medium">Contact Info</h3>
                   <p className="text-sm text-muted-foreground">Update contact info and social links</p>
                 </div>
               </a>

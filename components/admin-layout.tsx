@@ -71,7 +71,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Blog Posts", href: "/admin/blog", icon: FileText },
     { name: "Contact Forms", href: "/admin/contacts", icon: MessageSquare },
-    { name: "Settings", href: "/admin/contact-info", icon: Settings },
+    { name: "Settings", href: "/admin/settings", icon: Settings },
+    { name: "Contact Info", href: "/admin/contact-info", icon: MessageSquare },
     { name: "Edit Website", href: "/", icon: ExternalLink, external: true },
     { name: "Sign Out", href: "#", icon: LogOut, action: "logout" },
   ]
