@@ -30,7 +30,7 @@ export function useClientsContent() {
           return
         }
 
-        const docRef = doc(db, "site_content", `clients_${locale}`)
+        const docRef = doc(db, "site_content", "clients")
         const docSnap = await getDoc(docRef)
 
         if (docSnap.exists()) {
@@ -43,7 +43,7 @@ export function useClientsContent() {
         } else {
           // Set default content if no document exists
           const defaultContent: ClientsContent = {
-            id: `clients_${locale}`,
+            id: "clients",
             clients: [],
             updatedAt: new Date().toISOString(),
           }
