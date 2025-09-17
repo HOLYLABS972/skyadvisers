@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { 
@@ -213,6 +212,23 @@ export function RichTextEditor({
     insertText(pastedText)
   }
 
+  // Close emoji picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showEmojiPicker) {
+        const target = event.target as HTMLElement
+        if (!target.closest('.emoji-picker-container')) {
+          setShowEmojiPicker(false)
+        }
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showEmojiPicker])
+
   if (isEditing) {
     return (
       <div className={`relative group ${className}`}>
@@ -268,37 +284,43 @@ export function RichTextEditor({
             <ListOrdered className="h-4 w-4" />
           </Button>
           
-          <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
-            <PopoverTrigger asChild>
-              <Button
-                size="sm"
-                variant="outline"
-                className="h-8"
-                title="Add Emoji"
-              >
-                <Smile className="h-4 w-4" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-80 p-4">
-              <div className="grid grid-cols-10 gap-1 max-h-48 overflow-y-auto">
-                {EMOJIS.map((emoji, index) => (
-                  <Button
-                    key={index}
-                    size="sm"
-                    variant="ghost"
-                    className="h-8 w-8 p-0 text-lg hover:bg-muted"
-                    onClick={() => {
-                      console.log('Inserting emoji:', emoji)
-                      insertText(emoji)
-                      setShowEmojiPicker(false)
-                    }}
-                  >
-                    {emoji}
-                  </Button>
-                ))}
+          <div className="relative emoji-picker-container">
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-8"
+              title="Add Emoji"
+              onClick={() => {
+                console.log('Emoji button clicked, current state:', showEmojiPicker)
+                setShowEmojiPicker(!showEmojiPicker)
+              }}
+            >
+              <Smile className="h-4 w-4" />
+            </Button>
+            
+            {showEmojiPicker && (
+              <div className="absolute top-full left-0 mt-2 w-80 p-4 bg-background border rounded-md shadow-lg z-[9999]">
+                <div className="text-sm font-medium mb-2">Select an emoji:</div>
+                <div className="grid grid-cols-10 gap-1 max-h-48 overflow-y-auto">
+                  {EMOJIS.map((emoji, index) => (
+                    <Button
+                      key={index}
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0 text-lg hover:bg-muted"
+                      onClick={() => {
+                        console.log('Inserting emoji:', emoji)
+                        insertText(emoji)
+                        setShowEmojiPicker(false)
+                      }}
+                    >
+                      {emoji}
+                    </Button>
+                  ))}
+                </div>
               </div>
-            </PopoverContent>
-          </Popover>
+            )}
+          </div>
         </div>
 
         {/* Text Editor */}

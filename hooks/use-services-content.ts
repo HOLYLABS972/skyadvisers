@@ -32,7 +32,7 @@ export function useServicesContent(locale: string) {
           return
         }
 
-        const docRef = doc(db, "site_content", "services_shared")
+        const docRef = doc(db, "site_content", `services_${locale}`)
         const docSnap = await getDoc(docRef)
 
         if (docSnap.exists()) {
@@ -45,7 +45,7 @@ export function useServicesContent(locale: string) {
         } else {
           // Set default content if no document exists
           const defaultContent: ServicesContent = {
-            id: "services_shared",
+            id: `services_${locale}`,
             sectionTitle: locale === 'he' ? 'השירותים שלנו' : 'Our Services',
             services: [
               {

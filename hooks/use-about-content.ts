@@ -35,7 +35,7 @@ export function useAboutContent(locale: string) {
         return
       }
 
-        const docRef = doc(db, "site_content", "about_shared")
+        const docRef = doc(db, "site_content", `about_${locale}`)
       const docSnap = await getDoc(docRef)
 
       if (docSnap.exists()) {
@@ -47,27 +47,27 @@ export function useAboutContent(locale: string) {
         } as AboutContent)
       } else {
         const defaultContent: AboutContent = {
-            id: "about_shared",
-          sectionTitle: locale === 'he' ? "אודותינו" : "About Us",
-          sectionSubtitle: locale === 'he' ? "אנשי מקצוע מנוסים המוקדשים להצלחה שלכם" : "Experienced professionals dedicated to your success",
-          description: locale === 'he' ? "עם שנים של ניסיון בייעוץ עסקי, אנחנו עוזרים לחברות לנווט באתגרים מורכבים ולהשיג צמיחה בת קיימא. הצוות שלנו מביא ידע עמוק בתעשייה ותוצאות מוכחות." : "With years of experience in business advisory, we help companies navigate complex challenges and achieve sustainable growth. Our team brings deep industry knowledge and proven results.",
+            id: `about_${locale}`,
+          sectionTitle: locale === 'he' ? "אודות Skyadvisors" : "About Skyadvisors",
+          sectionSubtitle: locale === 'he' ? "מנהיגים את העתיד העסקי עם ייעוץ אסטרטגי מומחה" : "Leading the future of business with expert strategic guidance",
+          description: locale === 'he' ? "Skyadvisors הוא צוות של יועצים אסטרטגיים מובילים המתמחים בהנחיית חברות טכנולוגיה וסטארט-אפים לצמיחה משמעותית. עם ניסיון מצטבר של עשרות שנים בתעשייה, אנחנו עוזרים למנכ״לים ומייסדים לנווט באתגרים המורכבים של השוק המודרני ולהשיג תוצאות יוצאות דופן. הצוות שלנו מביא ידע עמוק בהשקעות, פיתוח עסקי ואסטרטגיה גלובלית." : "Skyadvisors is a team of leading strategic advisors specializing in guiding technology companies and startups to significant growth. With decades of combined industry experience, we help CEOs and founders navigate the complex challenges of the modern market and achieve exceptional results. Our team brings deep expertise in investments, business development, and global strategy.",
           aboutImageUrl: "",
           aboutImagePath: "",
           features: [
             {
               id: "expertise",
-              title: locale === 'he' ? "צוות מומחים" : "Expert Team",
-              description: locale === 'he' ? "אנשי מקצוע ותיקים עם עשורים של ניסיון מצטבר" : "Seasoned professionals with decades of combined experience"
+              title: locale === 'he' ? "מומחיות אסטרטגית" : "Strategic Expertise",
+              description: locale === 'he' ? "יועצים מובילים עם ניסיון עמוק בתעשיית הטכנולוגיה, השקעות ופיתוח עסקי גלובלי" : "Leading advisors with deep expertise in technology industry, investments, and global business development"
             },
             {
               id: "results",
               title: locale === 'he' ? "תוצאות מוכחות" : "Proven Results",
-              description: locale === 'he' ? "רקורד של אקזיטים מוצלחים וסבבי גיוס" : "Track record of successful exits and funding rounds"
+              description: locale === 'he' ? "רקורד מרשים של אקזיטים מוצלחים, סבבי גיוס משמעותיים וצמיחה מהירה של חברות" : "Impressive track record of successful exits, significant funding rounds, and rapid company growth"
             },
             {
               id: "global",
-              title: locale === 'he' ? "נוכחות גלובלית" : "Global Presence",
-              description: locale === 'he' ? "רשת בינלאומית של משקיעים ושיתופי פעולה" : "International network of investors and partnerships"
+              title: locale === 'he' ? "רשת גלובלית" : "Global Network",
+              description: locale === 'he' ? "חיבורים בינלאומיים עם משקיעים מובילים, שותפים אסטרטגיים ומומחי תעשייה ברחבי העולם" : "International connections with leading investors, strategic partners, and industry experts worldwide"
             }
           ],
           updatedAt: new Date().toISOString(),
@@ -86,7 +86,7 @@ export function useAboutContent(locale: string) {
       throw new Error("Firebase not configured")
     }
 
-        const docRef = doc(db, "site_content", "about_shared")
+        const docRef = doc(db, "site_content", `about_${locale}`)
     const updateData = {
       ...newContent,
       updatedAt: serverTimestamp(),
